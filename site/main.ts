@@ -1,5 +1,6 @@
-import { App } from './app/App';
 import { h, render } from 'preact';
+
+import { App } from './app/App';
 
 
 document.addEventListener('DOMContentLoaded', () => {
