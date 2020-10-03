@@ -14,6 +14,7 @@ const selectedOptionsWrapper = css`
   margin-top: 1rem;
 `;
 
+// Argument props is required for 'path' attribute in AppRouter.tsx
 export function CheckboxExample(props: RoutableProps) {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
