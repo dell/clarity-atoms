@@ -20,8 +20,12 @@
     "@babel/plugin-transform-react-jsx": "^7.10.1",
     "@babel/preset-env": "^7.10.1",
     "@babel/preset-typescript": "^7.10.1",
+    "@mdx-js/loader": "^1.6.18",
+    "@mdx-js/preact": "^1.6.18",
     "babel-loader": "^8.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "preact-router": "^3.2.1",
+    "prism-react-renderer": "^1.1.1",
     "typescript": "^3.9.3",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
@@ -31,7 +35,6 @@
     "emotion": "^10.0.27",
     "popmotion": "^8.7.3",
     "preact": "^10.4.4",
-    "preact-router": "^3.2.1",
     "rxjs": "^6.5.5"
   },
   "scripts": {

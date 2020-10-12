@@ -1,17 +1,17 @@
 import { h } from 'preact';
 import Router from 'preact-router';
 
-import { CheckboxExample } from '../components/CheckboxExample';
-import { RadioExample } from '../components/RadioExample';
+import ButtonDocs from '../pages/Button.mdx';
+import { CheckboxExample } from '../pages/CheckboxExample';
 
-import { AppNav } from './AppNav';
+import { Home } from './Home';
 
 export function AppRouter() {
   return (
     <Router>
-        <AppNav path="/"/>
-        <CheckboxExample path="/checkbox"/>
-        <RadioExample path="/radio"/>
-    </Router>
+        <Home path='/' />
+        <ButtonDocs path='/button' />
+        <CheckboxExample path='/checkbox'/>
+      </Router>
   );
 }
