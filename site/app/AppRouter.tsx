@@ -3,6 +3,7 @@ import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button.mdx';
 import { CheckboxExample } from '../pages/CheckboxExample';
+import { RadioExample } from '../pages/RadioExample';
 
 import { Home } from './Home';
 
@@ -12,6 +13,7 @@ export function AppRouter() {
         <Home path='/' />
         <ButtonDocs path='/button' />
         <CheckboxExample path='/checkbox'/>
+        <RadioExample path='/radio'/>
       </Router>
   );
 }
