@@ -1,8 +1,8 @@
-import { ComponentChildren, render, h } from 'preact';
-import { useEffect } from 'preact/hooks';
+import { ComponentChildren } from 'preact';
+import { createPortal } from 'preact/compat';
 
 export interface PortalProps {
-  mountElm?: HTMLElement;
+  mountElm: HTMLElement;
   children: ComponentChildren;
 };
 
@@ -16,19 +16,7 @@ export function Portal(props: PortalProps) {
 
   const { children, mountElm } = props;
 
-  // When mount element changes or
-  // when component getting destroyed,
-  // clean current mount element.
-  useEffect(() => {
-    return () => mountElm && render(null, mountElm);
-  }, [mountElm]);
-
-
-  // As long as mountElm exists, keep re-rendering
-  if (mountElm) {
-    render(children, mountElm);
-  }
 
   // Portal element renders nothing
-  return null;
+  return createPortal(children as any, mountElm);
 }

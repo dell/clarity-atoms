@@ -3,7 +3,7 @@ import { h } from 'preact';
 import { RoutableProps } from 'preact-router';
 import { useState } from 'preact/hooks';
 
-import { Checkbox } from '../../src/checkbox/Checkbox';
+import { Checkbox } from '../../src/Checkbox';
 
 const checkboxWrapper = css`
   display: flex;

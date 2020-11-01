@@ -2,7 +2,7 @@ import { cx, css } from 'emotion';
 import { h, ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { SVGIcon } from '../icons/SVGIcon';
+import { SVGIcon } from './icons/SVGIcon';
 
 export const checkboxStyles = css`
   display: inline-flex;
