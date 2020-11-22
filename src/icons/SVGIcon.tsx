@@ -2,7 +2,7 @@
 import { css, cx } from 'emotion';
 import { h } from 'preact';
 
-import * as icons from '.';
+import * as icons from './icons';
 
 export type IconType = keyof typeof icons;
 
@@ -26,7 +26,7 @@ export function SVGIcon(props: SVGIconProps) {
     <svg class={cx('svg-icon', style, props.class)} xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
       viewBox={icon.viewBox} width={props.width} height={props.height}>
       {props.title ? <title>{props.title}</title> : null}
-      {icon.svg}
+      {icon.svg()}
     </svg>
   );
 }

@@ -33,9 +33,10 @@
   },
   "dependencies": {
     "emotion": "^10.0.27",
-    "popmotion": "^8.7.3",
+    "popmotion": "^9.0.0",
     "preact": "^10.4.4",
-    "rxjs": "^6.5.5"
+    "rxjs": "^6.5.5",
+    "stylefire": "^7.0.3"
   },
   "scripts": {
     "dev": "webpack-dev-server"
