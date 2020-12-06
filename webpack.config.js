@@ -23,7 +23,7 @@ module.exports = {
   devtool: 'eval',
 
   entry: {
-    site: './site/main.ts'
+    site: ['./site/style.ts', './site/main.ts']
   },
 
   output: {
@@ -43,7 +43,15 @@ module.exports = {
         test: /\.mdx?$/,
         use: [
           {
-            loader: 'babel-loader'
+            loader: 'babel-loader',
+            // Temporary, consider using nested babel configuration till MDX support new JSX functions
+            options: {
+              plugins: [
+                ['@babel/plugin-transform-react-jsx', {
+                  runtime: 'classic'
+                }]
+              ]
+            }
           },
           {
             loader: '@mdx-js/loader',

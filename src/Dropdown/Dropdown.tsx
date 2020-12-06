@@ -1,5 +1,5 @@
 import { css, cx } from '@emotion/css';
-import { ComponentChildren, h, Ref } from 'preact';
+import { ComponentChildren, Ref } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import { noop } from 'rxjs';
 import styler from 'stylefire';

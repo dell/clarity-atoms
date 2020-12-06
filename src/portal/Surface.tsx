@@ -1,5 +1,5 @@
 import { cx } from '@emotion/css';
-import { h, ComponentChildren } from 'preact';
+import { ComponentChildren } from 'preact';
 
 import { transparentOverlay, darkOverlay } from './overlay';
 import { PortalIntoBody } from './PortalIntoBody';

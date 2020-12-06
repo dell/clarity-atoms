@@ -1,5 +1,5 @@
 import { css, cx } from '@emotion/css';
-import { ComponentChildren, h, Ref } from 'preact';
+import { ComponentChildren, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 
 export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';

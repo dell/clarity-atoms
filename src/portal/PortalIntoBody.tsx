@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { h, ComponentChildren, Ref } from 'preact';
+import { ComponentChildren, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useEffect, useLayoutEffect, useState } from 'preact/hooks';
 

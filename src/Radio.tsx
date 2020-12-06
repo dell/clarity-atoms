@@ -1,5 +1,5 @@
 import { css, cx } from '@emotion/css';
-import { ComponentChildren, h, VNode } from 'preact';
+import { ComponentChildren, VNode } from 'preact';
 import { useState } from 'preact/hooks';
 
 // Stateful values

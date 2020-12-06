@@ -1,5 +1,5 @@
 import { cx, css } from '@emotion/css';
-import { h, ComponentChildren } from 'preact';
+import { ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 
 import { SVGIcon } from './icons/SVGIcon';
