@@ -1,5 +1,5 @@
 import { MDXProvider } from '@mdx-js/preact';
-import { css, injectGlobal } from 'emotion';
+import { css, injectGlobal } from '@emotion/css';
 import { h } from 'preact';
 
 import { CodeBlock } from '../components/CodeBlock';

@@ -1,4 +1,4 @@
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 import { ComponentChildren, h, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 

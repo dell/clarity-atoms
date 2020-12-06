@@ -1,8 +1,8 @@
-import { cx } from 'emotion';
+import { cx } from '@emotion/css';
 import { h, ComponentChildren } from 'preact';
 
-import { transparentOverlay, darkOverlay } from '../portal/overlay';
-import { PortalIntoBody } from '../portal/PortalIntoBody';
+import { transparentOverlay, darkOverlay } from './overlay';
+import { PortalIntoBody } from './PortalIntoBody';
 
 
 export interface SurfaceProps {

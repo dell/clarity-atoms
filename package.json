@@ -32,10 +32,10 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "emotion": "^10.0.27",
+    "@emotion/css": "^11.0.0",
     "popmotion": "^9.0.0",
     "preact": "^10.4.4",
-    "rxjs": "^6.5.5",
+    "rxjs": "^6.6.3",
     "stylefire": "^7.0.3"
   },
   "scripts": {

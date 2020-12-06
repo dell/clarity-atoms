@@ -1,4 +1,4 @@
-import { cx, css } from 'emotion';
+import { cx, css } from '@emotion/css';
 import { h, ComponentChildren } from 'preact';
 import { useState } from 'preact/hooks';
 

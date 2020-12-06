@@ -1,5 +1,5 @@
 
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 import { h } from 'preact';
 
 import * as icons from './icons';

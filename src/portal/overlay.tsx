@@ -1,4 +1,5 @@
-import { css } from 'emotion';
+import { css } from '@emotion/css';
+
 
 export const overlayBase = css`
   position: fixed;

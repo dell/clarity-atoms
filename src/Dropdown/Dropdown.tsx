@@ -1,4 +1,4 @@
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 import { ComponentChildren, h, Ref } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import { noop } from 'rxjs';
@@ -7,7 +7,7 @@ import styler from 'stylefire';
 import { borderSecondary } from '../color';
 
 import { makePlacement$ } from './strategy/bottom';
-import { Surface } from './Surface';
+import { Surface } from '../portal/Surface';
 
 
 export interface UseDropdownHook {
