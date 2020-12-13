@@ -2,6 +2,8 @@ import { h } from 'preact';
 import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button.mdx';
+import SimpleSelect from '../pages/SimpleSelect/SimpleSelect.mdx';
+
 import { CheckboxExample } from '../pages/CheckboxExample';
 import { RadioExample } from '../pages/RadioExample';
 
@@ -14,6 +16,7 @@ export function AppRouter() {
         <ButtonDocs path='/button' />
         <CheckboxExample path='/checkbox'/>
         <RadioExample path='/radio'/>
+        <SimpleSelect path='/simple-select' />
       </Router>
   );
 }

@@ -10,19 +10,23 @@ import { makePlacement$ } from './strategy/bottom';
 import { Surface } from '../portal/Surface';
 
 
-export interface UseDropdownHook {
+export interface DropdownHook {
   isOpen: boolean;
   open: () => void;
   close: () => void;
 
   anchor: HTMLElement | null;
   surface: HTMLElement | null;
-  anchorRef: Ref<any>;
-  surfaceRef: Ref<any>;
 
-  // TODO: Is it leaking responsibility (or bad abstraction)?
-  surfaceProps?: any;
-  anchorProps?: any;
+  anchorProps: {
+    ref: Ref<any>;
+    [key: string]: any;
+  };
+
+  surfaceProps: {
+    ref: Ref<any>;
+    [key: string]: any;
+  };
 }
 
 
@@ -50,7 +54,8 @@ export const dropdownItemStyle = css`
   }
 `;
 
-export function useDropdown(): UseDropdownHook {
+
+export function useDropdown(): DropdownHook {
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -93,16 +98,12 @@ export function useDropdown(): UseDropdownHook {
   // For non-escape key, bubble up the event.
   const onKeydown = (e: KeyboardEvent) => {
 
-    if (e.code === 'Escape') {
+    if (e.key === 'Escape') {
       e.preventDefault();
       e.stopPropagation();
 
       close();
     }
-  };
-
-  const props = {
-    onKeydown
   };
 
 
@@ -112,9 +113,13 @@ export function useDropdown(): UseDropdownHook {
     close,
     anchor,
     surface,
-    anchorRef: setAnchor,
-    surfaceRef: setSurface,
-    surfaceProps: props
+    anchorProps: {
+      ref: setAnchor
+    },
+    surfaceProps: {
+      ref: setSurface,
+      onKeydown
+    }
   };
 }
 
@@ -122,15 +127,12 @@ export interface DropdownSurfaceProps {
   class?: string;
   surfaceClass?: string;
 
-  dd: UseDropdownHook;
+  dd: DropdownHook;
   children: ComponentChildren;
 }
 
 
 const surfaceStyle = css`
-  /* Temporary - as per DPD mandate. */
-  font-size: 14px;
-
   perspective: 800px;
 `;
 
@@ -146,9 +148,8 @@ export function DropdownSurface(props: DropdownSurfaceProps) {
   return (
     <Surface class={cx(surfaceStyle, surfaceClass)} overlayClass={overlayStyle}
       attached={dd.isOpen} onBackdropClick={dd.close}>
-        <div {...dd.surfaceProps} class={cx(dropdownStyle, props.class)}
-          ref={dd.surfaceRef} tabIndex={-1}>
-            {children}
+        <div {...dd.surfaceProps} class={cx(dropdownStyle, props.class)} tabIndex={-1}>
+          {children}
         </div>
     </Surface>
   );
