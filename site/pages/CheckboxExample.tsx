@@ -1,5 +1,4 @@
 import { css } from '@emotion/css';
-import { h } from 'preact';
 import { RoutableProps } from 'preact-router';
 import { useState } from 'preact/hooks';
 

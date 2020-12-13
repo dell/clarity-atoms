@@ -1,15 +1,28 @@
 import { MDXProvider } from '@mdx-js/preact';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 
 import { CodeBlock } from '../components/CodeBlock';
 
+import { AppHeader } from './AppHeader';
+import { AppNav } from './AppNav';
 import { AppRouter } from './AppRouter';
 
 
-export const navLinkStyle = css`
-  color: #0076CE;
-  text-decoration: none;
-  cursor: pointer;
+const rootStyle = css`
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+
+  grid-template-rows: auto 1fr;
+`;
+
+const sectionStyle = css`
+  display: grid;
+  grid-template-columns: 320px 1fr;
+`;
+
+const outletStyle = css`
+  padding: 1.5rem;
 `;
 
 const components = {
@@ -21,11 +34,12 @@ export function App() {
 
   return (
     <MDXProvider components={components}>
-      <div>
-        <h1>
-          <a class={navLinkStyle} href="/">Clarity Atom Examples</a>
-        </h1>
-        <AppRouter />
+      <div class={cx('app', rootStyle)}>
+        <AppHeader />
+        <div class={sectionStyle}>
+          <AppNav />
+          <AppRouter class={outletStyle} />
+        </div>
       </div>
     </MDXProvider>
   );

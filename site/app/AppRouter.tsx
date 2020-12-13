@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { cx } from '@emotion/css';
 import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button.mdx';
@@ -9,14 +9,21 @@ import { RadioExample } from '../pages/RadioExample';
 
 import { Home } from './Home';
 
-export function AppRouter() {
+
+export interface AppRouterProps {
+  class?: string;
+}
+
+export function AppRouter(props: AppRouterProps) {
   return (
-    <Router>
+    <div class={cx('page-outlet', props.class)}>
+      <Router>
         <Home path='/' />
         <ButtonDocs path='/button' />
         <CheckboxExample path='/checkbox'/>
         <RadioExample path='/radio'/>
         <SimpleSelect path='/simple-select' />
       </Router>
+    </div>
   );
 }

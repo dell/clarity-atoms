@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 
 // import dracula from 'prism-react-renderer/themes/dracula';

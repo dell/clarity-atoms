@@ -66,7 +66,7 @@ module.exports = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Clarity Atoms'
+      title: 'Clarity Atoms - Sensible components for Enterprise Apps'
     })
   ],
 
