@@ -10,7 +10,7 @@ import { AppRouter } from './AppRouter';
 
 const rootStyle = css`
   display: grid;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 
   grid-template-rows: auto 1fr;
@@ -22,7 +22,14 @@ const sectionStyle = css`
 `;
 
 const outletStyle = css`
+  width: 100%;
   padding: 1.5rem;
+  max-width: 980px;
+
+  justify-self: center;
+
+  border-left: 1px solid #F8F8F8;
+  border-right: 1px solid #F8F8F8;
 `;
 
 const components = {

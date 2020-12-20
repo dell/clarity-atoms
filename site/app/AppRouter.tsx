@@ -2,7 +2,8 @@ import { cx } from '@emotion/css';
 import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button.mdx';
-import SimpleSelect from '../pages/SimpleSelect/SimpleSelect.mdx';
+import DialogDocs from '../pages/Dialog/Dialog.mdx';
+import SimpleSelectDocs from '../pages/SimpleSelect/SimpleSelect.mdx';
 
 import { CheckboxExample } from '../pages/CheckboxExample';
 import { RadioExample } from '../pages/RadioExample';
@@ -21,8 +22,9 @@ export function AppRouter(props: AppRouterProps) {
         <Home path='/' />
         <ButtonDocs path='/button' />
         <CheckboxExample path='/checkbox'/>
+        <DialogDocs path='/dialog'/>
         <RadioExample path='/radio'/>
-        <SimpleSelect path='/simple-select' />
+        <SimpleSelectDocs path='/simple-select' />
       </Router>
     </div>
   );

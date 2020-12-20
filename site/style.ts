@@ -14,15 +14,51 @@ injectGlobal`
 
   html,
   body {
-    font-family: 'Fira Sans', sans-serif;
     margin: 0;
     padding: 0;
 
     color: #444444;
+
+    /* line-height: 1.5; */
+
+    font-family: 'Fira Sans', sans-serif;
   }
 
   pre {
     font-family: 'Fira Code', monospace;
     font-weight: 500;
+  }
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 600;
+  }
+
+  h2 {
+    margin: 3rem 0 0;
+    font-weight: 500;
+  }
+
+  h3, h4 {
+    margin: 2rem 0 0;
+    font-weight: 500;
+  }
+
+
+  p {
+    margin: 0.75rem 0 0;
+  }
+
+  blockquote {
+    margin: 1rem 0 1.5rem;
+    padding: 0.5rem;
+
+    border-left: 4px solid #CCCCCC;
+
+    background: #FAFAFA;
+    color: #777;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.2px;
   }
 `;

@@ -15,23 +15,26 @@ const rootStyle = css`
 
   align-items: stretch;
 
+  /* line-height: normal; */
+
   background-color: ${primary};
   color: #FFFFFF;
 `;
 
 const headingStyle = css`
   margin: 0;
+
+  font-size: 27px;
+  line-height: 40px;
 `;
 
 const navLinkStyle = css`
-  font-family: 'Sansita', sans-serif;
-
   line-height: 1;
 
   cursor: pointer;
 
+  font-family: 'Sansita', sans-serif;
   color: #FFFFFF;
-  font-size: 27px;
   letter-spacing: 0.6px;
   text-decoration: none;
 `;

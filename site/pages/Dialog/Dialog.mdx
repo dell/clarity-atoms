@@ -1,0 +1,24 @@
+# Dialog
+
+A dialog is an implementation of modal window. It appears in front of app content in **intrusive** way to grab user's attention.
+It provides blocking/critical information or ask for immediate input without which user workflow cannot simply continue.
+
+> Dialog should always be used sparingly. It is often not the answer you seek.
+
+Clarity Atoms Dialog control closely follows Clarity Design principles.
+
+
+## Dialog - UX Principles
+
+### Make underlying content inaccessible
+When any Dialog is open, underlying application content should not be accessible to user by any means unless, the dialog is dismissed.
+
+### Trap the user focus
+When the dialog box is opened, the focus of the active element should move to any focusable element within the dialog box.
+It means that dialog box should always have at least one focusable element.
+
+### Keyboard accessibility
+User should be able to dismiss the dialog box when the dialog box has cancel action available. For situations where user must provide inputs, this requirement can be laxed.
+
+### Avoid layers Dialog
+At any given point in time, more than one dialog box should not be active. Unless, it is simple yes and no

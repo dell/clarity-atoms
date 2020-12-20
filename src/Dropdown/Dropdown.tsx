@@ -30,31 +30,6 @@ export interface DropdownHook {
 }
 
 
-const dropdownStyle = css`
-  position: absolute;
-  display: flex;
-  margin-top: 0.5rem;
-
-  flex-direction: column;
-
-  background: #FFFFFF;
-  border: 1px solid ${borderSecondary};
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
-  outline: none;
-
-  overflow: auto;
-`;
-
-export const dropdownItemStyle = css`
-  padding: 1rem 1.5rem;
-
-  &:hover {
-    text-decoration: none;
-    background-color: #F0F0F0;
-  }
-`;
-
-
 export function useDropdown(): DropdownHook {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -130,6 +105,31 @@ export interface DropdownSurfaceProps {
   dd: DropdownHook;
   children: ComponentChildren;
 }
+
+
+const dropdownStyle = css`
+  position: absolute;
+  display: flex;
+  margin-top: 0.5rem;
+
+  flex-direction: column;
+
+  background: #FFFFFF;
+  border: 1px solid ${borderSecondary};
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
+  outline: none;
+
+  overflow: auto;
+`;
+
+export const dropdownItemStyle = css`
+  padding: 1rem 1.5rem;
+
+  &:hover {
+    text-decoration: none;
+    background-color: #F0F0F0;
+  }
+`;
 
 
 const surfaceStyle = css`

@@ -8,7 +8,10 @@ export interface HomeProps extends RoutableProps {}
 export function Home(_props: HomeProps) {
   return (
     <div>
-      <h2>Home Page</h2>
+      <h1>Clarity Atoms</h1>
     </div>
   );
 }
+
+
+// <a href="https://www.freepik.com/vectors/background">Background vector created by freepik - www.freepik.com</a>
