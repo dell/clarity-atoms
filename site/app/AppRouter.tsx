@@ -1,4 +1,4 @@
-import { cx } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button.mdx';
@@ -15,9 +15,15 @@ export interface AppRouterProps {
   class?: string;
 }
 
+
+const routerStyle = css`
+  position: relative;
+  overflow: hidden;
+`;
+
 export function AppRouter(props: AppRouterProps) {
   return (
-    <div class={cx('page-outlet', props.class)}>
+    <div class={cx('page-outlet', routerStyle, props.class)}>
       <Router>
         <Home path='/' />
         <ButtonDocs path='/button' />

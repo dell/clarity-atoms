@@ -1,4 +1,4 @@
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { ComponentChildren } from 'preact';
 import { Link } from 'preact-router/match';
 
@@ -6,18 +6,20 @@ import { border, borderSecondary, primary } from '../../src/color';
 
 
 export interface AppNavProps {
-
+  class?: string;
 }
 
 
 const rootStyle = css`
   background-color: #FAFAFA;
+
+  z-index: 1;
 `;
 
 const listStyle = css`
   display: flex;
   margin: 2rem 0 0;
-  padding: 0;
+  padding: 0 0 2rem;
 
   flex-direction: column;
 
@@ -25,16 +27,18 @@ const listStyle = css`
 `;
 
 
-export function AppNav(_props: AppNavProps) {
+export function AppNav(props: AppNavProps) {
 
   return (
-    <nav class={rootStyle}>
+    <nav class={cx(rootStyle, props.class)}>
       <ul class={listStyle}>
         <NavItem href='/button'>Button</NavItem>
         <NavItem href='/checkbox'>Checkbox</NavItem>
         <NavItem href='/dialog'>Dialog</NavItem>
         <NavItem href='/radio'>Radio</NavItem>
         <NavItem href='/simple-select'>Simple Select</NavItem>
+
+        <NavItem href='/radio'>Radio</NavItem>
       </ul>
     </nav>
   );

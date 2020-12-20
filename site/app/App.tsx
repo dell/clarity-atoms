@@ -1,5 +1,9 @@
-import { MDXProvider } from '@mdx-js/preact';
 import { css, cx } from '@emotion/css';
+import { MDXProvider } from '@mdx-js/preact';
+import { useState } from 'preact/hooks';
+
+
+import { useMediaQuery } from '../../src/hooks';
 
 import { CodeBlock } from '../components/CodeBlock';
 
@@ -17,16 +21,49 @@ const rootStyle = css`
 `;
 
 const sectionStyle = css`
-  display: grid;
-  grid-template-columns: 320px 1fr;
+
+  position: relative;
+  min-height: 0;
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+  }
 `;
 
-const outletStyle = css`
-  width: 100%;
+const permanentMenuStyle = css`
+  min-height: 0;
+
+  overflow: auto;
+`;
+
+const slidingMenuStyle = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  overflow: auto;
+
+  transform: translateX(-100%);
+
+  transition: all 240ms ease-out;
+
+  &.isOpen {
+    transform: translateX(0);
+  }
+`;
+
+const contentStyle = css`
+  height: 100%;
+  overflow: auto;
+`;
+
+const routerStyle = css`
+  margin: 0 auto;
   padding: 1.5rem;
   max-width: 980px;
-
-  justify-self: center;
 
   border-left: 1px solid #F8F8F8;
   border-right: 1px solid #F8F8F8;
@@ -37,16 +74,25 @@ const components = {
   code: CodeBlock
 };
 
+
 export function App() {
+
+  const isLargeScreen = useMediaQuery('(min-width: 900px)');
+
+  // Small screen or large screen
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
 
   return (
     <MDXProvider components={components}>
       <div class={cx('app', rootStyle)}>
-        <AppHeader />
-        <div class={sectionStyle}>
-          <AppNav />
-          <AppRouter class={outletStyle} />
-        </div>
+        <AppHeader onMenuToggle={() => setIsMenuOpen(!isMenuOpen)} />
+        <section class={cx(sectionStyle)}>
+          <AppNav class={cx(isLargeScreen ? permanentMenuStyle : slidingMenuStyle, isMenuOpen && 'isOpen')} />
+          <div class={contentStyle}>
+            <AppRouter class={routerStyle} />
+          </div>
+        </section>
       </div>
     </MDXProvider>
   );
