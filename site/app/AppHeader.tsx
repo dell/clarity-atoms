@@ -4,6 +4,8 @@ import { Button } from '../../src/Button';
 import { primary } from '../../src/color';
 import { SVGIcon } from '../../src/icons/SVGIcon';
 
+import { ClarityAtomsLogo } from '../components/Logo';
+
 
 export interface AppHeaderProps {
   onMenuToggle: () => void;
@@ -50,19 +52,41 @@ const menuIconStyle = css`
 const headingStyle = css`
   margin: 0;
 
-  font-size: 27px;
+  font-size: 1.25rem;
   line-height: 40px;
+
+  @media (min-width: 540px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const navLinkStyle = css`
+  display: flex;
+  font-weight: 400;
+
+  align-items: center;
   line-height: 1;
 
   cursor: pointer;
 
-  font-family: 'Sansita', sans-serif;
   color: #FFFFFF;
-  letter-spacing: 0.6px;
   text-decoration: none;
+`;
+
+const logoStyle = css`
+  width: 2rem;
+  height: 2rem;
+
+  fill: currentColor;
+
+  @media (min-width: 540px) {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+`;
+
+const titleStyle = css`
+  margin-left: 0.5rem;
 `;
 
 const taglineStyle = css`
@@ -130,7 +154,8 @@ export function AppHeader(props: AppHeaderProps) {
       </Button>
       <h1 class={headingStyle}>
         <a class={navLinkStyle} href="/">
-          ClaRity AtOmS
+          <ClarityAtomsLogo class={logoStyle} />
+          <span class={titleStyle}>Clarity Atoms</span>
         </a>
       </h1>
       <div class={taglineStyle}>Sensible components for Enterprise Apps</div>
