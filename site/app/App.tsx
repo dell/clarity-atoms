@@ -5,7 +5,7 @@ import { useState } from 'preact/hooks';
 
 import { useMediaQuery } from '../../src/hooks';
 
-import { CodeBlock } from '../components/CodeBlock';
+import { CodeBlock, CodeBlockInline } from '../components/CodeBlock';
 
 import { AppHeader } from './AppHeader';
 import { AppNav } from './AppNav';
@@ -71,7 +71,8 @@ const routerStyle = css`
 
 const components = {
   pre: (props: any) => <div class='code-block' {...props} />,
-  code: CodeBlock
+  code: CodeBlock,
+  'inline-code': CodeBlockInline
 };
 
 

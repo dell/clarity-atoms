@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import Router from 'preact-router';
 
-import ButtonDocs from '../pages/Button.mdx';
+import ButtonDocs from '../pages/Button/Button.mdx';
 import DialogDocs from '../pages/Dialog/Dialog.mdx';
 import SimpleSelectDocs from '../pages/SimpleSelect/SimpleSelect.mdx';
 

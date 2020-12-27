@@ -1,0 +1,72 @@
+
+import { Button } from '../../../src/Button';
+import { ButtonVariation } from './ButtonVariation';
+
+# Button
+
+Button is the first element of interaction for user and the most basic building block of a component
+system. User interacts with a button using mouse, keyboard or a tap on touch screen interface.
+
+> Buttons are the first element of application branding.
+
+## Button - UX Principles
+
+### Types of buttons
+At a baseline, buttons have **three distinct flavours**. An applicantion using Clarity Atoms can
+build on these three variation to build it own customized buttons. Following are the three variations.
+
+<ButtonVariation />
+
+Alternately, three buttons types are also recognized as **primary**, **secondary** and **tertiary**
+action buttons and are used interchangeably.
+
+### Buttons and Links
+Buttons share lots of characteristics with **Links** especially on accessibility and visual experience
+front. It is even more evident in case of flat button. However, the guideline is very straight forward.
+
+> Use a link when a user is expected to be taken to a different page.
+
+
+### Size
+Size of the button should consider all the possibilities with which user would interfact with an
+application. Some users with motors skill disorders have trouble interfacting with buttons if they
+are small. It it more evident so with touch interfaces where primary medium of interaction is touch and
+users have different finger sizes.
+
+> At minimum, button should be 36px x 36px in size.
+
+Clarity Atoms provide two types of size for buttons viz. **Standard Button** and **Compact Button**:
+ - Standard button has 36px height whereas compact button has 24px height.
+ - While compact button breaks the minimum 36px height rule, it is sometimes required in edge case
+    scenarios.
+ - The 24px height can be compensated by sufficient width and having enough room space around
+    it to avoid accidental mistakes for the user.
+ - In general, compact button should be used sparingly.
+
+
+### States and Behavior
+Every button variant must support 4 mandatory states and 1 optional state. The states are as Following
+
+  1. **Normal & enabled** - The natural visual state of the button when user has not interacted with it.
+      Note that - "button should look like a button in a normal state".
+  2. **Focused** - The state when the button is the currently active element on the page. The button gets
+      focused by various means - Keyboard `tab` key interaction, long tap, partial mouse click, etc.
+  3. **Pressed** - A complex state that gets activated when user starts tapping/click the button. It gets
+      over when the press action is completed. User should be provided appropriate visual indicator when
+      the press action is in process.
+  4. **Disabled** - An inactive state where no interaction is allowed with the button.
+  5. **Hover** - (Optional) hover state which comes into effect only when mouse is being used. It gets
+      activated when mouse is hovered over the button, just before it is being pressed or focused.
+
+Button can always be exactly at one state at a time. So, if button is focused and at the same mouse is
+hovered over the button, focused state should override the hover state. The priority of states is:
+
+> `Disabled` > `Pressed` > `Focused` > `Hover` > `Normal`
+
+### Single Line Buttons
+Multi-line buttons should be avoided and long-text buttons should be avoided.
+
+### Additional considerations
+Buttons, being the first element of design system, has many other considerations such as their placement,
+allowed icons within the buttons and their styling, etc. But those are all application experience concerns
+and as such not part of the Clarity Atoms. Please refer to your products UX guidelines or design system.

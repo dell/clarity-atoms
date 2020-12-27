@@ -7,7 +7,7 @@ const renderer = `
   const mdx = function (name, props, ...children) {
 
     if (name === 'inlineCode') {
-      return h('code', props, ...children);
+      return h('inline-code', props, ...children);
     }
 
     return h(name, props, ...children);

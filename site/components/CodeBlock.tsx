@@ -1,3 +1,4 @@
+import { css, cx } from '@emotion/css';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 
 // import dracula from 'prism-react-renderer/themes/dracula';
@@ -39,5 +40,28 @@ export function CodeBlock(props: CodeViewerProps) {
         </pre>
       )}
     </Highlight>
+  );
+}
+
+
+const inlineRootStyle = css`
+  display: inline-flex;
+  margin: 0;
+  padding: 0 0.2rem;
+
+  border-radius: 0.25rem;
+  border: 1px solid rgba(41, 45, 62, 0.2);
+
+  line-height: 1.25;
+
+  background: #F0F0F0;
+`;
+
+
+export function CodeBlockInline(props: CodeViewerProps) {
+  return (
+    <pre class={cx(inlineRootStyle, props.class)}>
+      {props.children}
+    </pre>
   );
 }
