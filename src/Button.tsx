@@ -5,6 +5,7 @@ import { forwardRef } from 'preact/compat';
 export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';
 export type ButtonType = 'button' | 'submit' | 'reset';
 
+
 export interface ButtonProps {
   class?: string;
   type?: ButtonType;
@@ -27,7 +28,7 @@ const base = css`
   justify-content: center;
 
   background: transparent;
-  color: #0076CE;
+  color: var(--ca-primary);
 `;
 
 export const minimal = css`
@@ -54,17 +55,17 @@ export const standard = css`
   font-weight: bold;
 
   &[disabled] {
-    color: #CCCCCC;
+    color: var(--ca-disabled);
   }
 `;
 
 const outline = css`
   ${standard};
 
-  border: 2px solid #0076CE;
+  border: 2px solid var(--ca-primary);
 
   &[disabled] {
-    border-color: #EEEEEE;
+    border-color: var(--disabled-light);
   }
 `;
 
@@ -77,11 +78,11 @@ const flat = css`
 // Backward compatibility with CSM buttons
 const solid = css`
   ${standard}
-  background-color: #0076CE;
+  background-color: var(--ca-primary);
   color: white;
 
   &[disabled] {
-    background-color: #EEEEEE;
+    background-color: var(--disabled-light);
   }
 `;
 
@@ -91,7 +92,6 @@ const compactStyle = css`
   /* Clarity compact button height */
   height: 24px;
 `;
-
 
 
 export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HTMLButtonElement>) {
