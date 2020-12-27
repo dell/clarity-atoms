@@ -7,6 +7,7 @@ import { App } from './app/App';
 
 const theme: Theme = {
   primary: '#0076CE',
+  primaryComp: '#FFFFFF',
   border: '#CCCCCC',
   borderLight: '#E0E0E0',
   disabled: '#CCCCCC',

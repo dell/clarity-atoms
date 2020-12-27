@@ -27,6 +27,8 @@ const base = css`
   align-items: center;
   justify-content: center;
 
+  cursor: pointer;
+
   background: transparent;
   color: var(--ca-primary);
 `;
@@ -39,10 +41,10 @@ export const minimal = css`
   border: none;
 `;
 
-export const standard = css`
+const standard = css`
   ${base};
 
-  border-radius: 0.25rem;
+  border-radius: 0.2rem;
   padding: 0 1rem;
 
   /* Clarity standard button height */
@@ -62,7 +64,7 @@ export const standard = css`
 const outline = css`
   ${standard};
 
-  border: 2px solid var(--ca-primary);
+  border: 1px solid var(--ca-primary);
 
   &[disabled] {
     border-color: var(--disabled-light);
@@ -71,15 +73,21 @@ const outline = css`
 
 const flat = css`
   ${standard};
-
-  border: 2px solid transparent;
 `;
 
 // Backward compatibility with CSM buttons
 const solid = css`
   ${standard}
   background-color: var(--ca-primary);
-  color: white;
+  color: var(--ca-primary-comp);
+
+  &:hover {
+    background-color: var(--ca-primary-semidark);
+  }
+
+  &:focus {
+    background-color: var(--ca-primary-light);
+  }
 
   &[disabled] {
     background-color: var(--disabled-light);
