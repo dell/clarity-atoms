@@ -61,19 +61,46 @@ const standard = css`
   }
 `;
 
+const flat = css`
+  ${standard};
+
+  background: transparent;
+
+  transition: all 120ms ease-out;
+
+  &:hover {
+    background: var(--ca-button-hover);
+  }
+
+  &:focus {
+    background: var(--ca-button-focus);
+  }
+`;
+
 const outline = css`
   ${standard};
 
-  border: 1px solid var(--ca-primary);
+  border: 1px solid var(--ca-border);
+
+  background: transparent;
+
+  transition: all 120ms ease-out;
+
+  &:hover {
+    background: var(--ca-button-hover);
+    border-color: var(--ca-primary);
+  }
+
+  &:focus {
+    background: var(--ca-button-focus);
+    border-color: var(--ca-primary);
+  }
 
   &[disabled] {
     border-color: var(--disabled-light);
   }
 `;
 
-const flat = css`
-  ${standard};
-`;
 
 // Backward compatibility with CSM buttons
 const solid = css`
@@ -82,7 +109,7 @@ const solid = css`
   color: var(--ca-primary-comp);
 
   &:hover {
-    background-color: var(--ca-primary-semidark);
+    background-color: var(--ca-primary-semilight);
   }
 
   &:focus {

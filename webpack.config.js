@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const remarkCodeImport = require('remark-code-import');
 
 const renderer = `
   import { mdx as h } from '@mdx-js/preact';
@@ -20,7 +21,7 @@ module.exports = {
   context: __dirname,
 
   mode: 'development',
-  devtool: 'eval',
+  devtool: 'source-map',
 
   entry: {
     site: ['./site/style.ts', './site/main.ts']
@@ -56,7 +57,8 @@ module.exports = {
           {
             loader: '@mdx-js/loader',
             options: {
-              renderer
+              renderer,
+              remarkPlugins: [remarkCodeImport]
             }
           }
         ]

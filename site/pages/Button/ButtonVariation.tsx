@@ -45,7 +45,7 @@ export function ButtonVariation() {
           Flat Button
         </Button>
         <p>
-          Flat Button is as good as a text on a page with added differentiation color-based emaphsis.
+          Flat Button is as good as a text on a page with added differentiation of color-based emphasis.
           Flat button is used for non-intrusive actions within the application.
         </p>
       </div>
