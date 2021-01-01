@@ -60,6 +60,9 @@ module.exports = {
               renderer,
               remarkPlugins: [remarkCodeImport]
             }
+          },
+          {
+            loader: path.resolve(__dirname, 'webpack.helper.js')
           }
         ]
       }
@@ -76,6 +79,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.mjs', '.jsx', '.js'],
     mainFields: ['browser', 'module', 'main'],
     alias: {
+      'clarity-atoms': path.resolve(__dirname, 'src'),
       'react': 'preact/compat',
       'react-dom': 'preact/compat'
     }

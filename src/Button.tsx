@@ -55,6 +55,7 @@ const standard = css`
   outline: none;
 
   font-weight: bold;
+  white-space: nowrap;
 
   &[disabled] {
     color: var(--ca-disabled);

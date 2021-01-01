@@ -26,8 +26,11 @@ export function CodeBlock(props: CodeViewerProps) {
 
   const language = (props.class?.replace(/language-/, '') ?? 'javascript') as any as Language;
 
+  // Trim leading whitespace and new line character from the code
+  const code = children.replace(/^\s+|\s+$/g, '');
+
   return (
-    <Highlight {...defaultProps} theme={palenight} code={children} language={language}>
+    <Highlight {...defaultProps} theme={palenight} code={code} language={language}>
       {({className, style, tokens, getLineProps, getTokenProps}) => (
         <pre class={className} style={{...style, padding: '1rem' }}>
           {tokens.map((line, i) => (

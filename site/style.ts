@@ -22,11 +22,14 @@ injectGlobal`
     line-height: 1.5;
 
     font-family: 'Fira Sans', sans-serif;
+    font-size: 16px;
   }
 
   pre {
-    font-family: 'Fira Code', monospace;
+    margin: 0 ;
+
     font-weight: 500;
+    font-family: 'Fira Code', monospace;
   }
 
   h1 {
@@ -60,5 +63,23 @@ injectGlobal`
     font-weight: 500;
     font-style: italic;
     letter-spacing: 0.2px;
+  }
+
+  .code-block {
+    margin-top: 1rem;
+
+    pre {
+      overflow-x: auto;
+
+      font-size: 12px;
+    }
+  }
+
+  .playground {
+    margin-top: 1rem;
+  }
+
+  .playground + .code-block {
+    margin: 0;
   }
 `;
