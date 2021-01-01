@@ -55,7 +55,7 @@ const inlineRootStyle = css`
   border-radius: 0.25rem;
   border: 1px solid rgba(41, 45, 62, 0.2);
 
-  line-height: 1.25;
+  line-height: 1.125;
 
   background: #F0F0F0;
 `;

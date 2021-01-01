@@ -7,7 +7,12 @@ const rootStyle = css`
   margin-top: 1rem;
 
   grid-gap: 2rem;
-  grid-template-columns: 1fr 1fr 1fr;
+
+  grid-template-columns: 1fr;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `;
 
 const boxStyle = css`

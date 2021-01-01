@@ -22,12 +22,15 @@ const rootStyle = css`
 `;
 
 const sectionStyle = css`
-
   position: relative;
   min-height: 0;
 
   @media (min-width: 768px) {
     display: grid;
+    grid-template-columns: 270px 1fr;
+  }
+
+  @media (min-width: 900px) {
     grid-template-columns: 320px 1fr;
   }
 `;
@@ -80,7 +83,7 @@ const components = {
 
 export function App() {
 
-  const isLargeScreen = useMediaQuery('(min-width: 900px)');
+  const isLargeScreen = useMediaQuery('(min-width: 768px)');
 
   // Small screen or large screen
   const [isMenuOpen, setIsMenuOpen] = useState(false);
