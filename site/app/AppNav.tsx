@@ -37,8 +37,6 @@ export function AppNav(props: AppNavProps) {
         <NavItem href='/dialog'>Dialog</NavItem>
         <NavItem href='/radio'>Radio</NavItem>
         <NavItem href='/simple-select'>Simple Select</NavItem>
-
-        <NavItem href='/radio'>Radio</NavItem>
       </ul>
     </nav>
   );

@@ -71,4 +71,42 @@ and as such not part of the Clarity Atoms. Please refer to your product's UX gui
 
 ## Examples
 
-@@snippet './Example1';
+### Standard Buttons
+@@snippet './BaseExample';
+
+
+### Disabled Buttons
+@@snippet './ButtonDisabled';
+
+
+## Component Props
+
+```ts
+export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';
+export type ButtonType = 'button' | 'submit' | 'reset';
+
+export interface ButtonProps {
+  // Additional class names to be added
+  class?: string;
+
+  // Submit | Rest | Button
+  type?: ButtonType;
+
+  // HTML title attribute
+  title?: string;
+
+  // Click event handler
+  onClick?: () => void;
+
+  // Children items
+  children?: ComponentChildren;
+
+  // Stylign props
+  disabled?: boolean;
+  variant?: ButtonVariant;
+  compact?: boolean;
+
+  // Access native DOM Button element
+  ref?: Ref<any>;
+};
+```

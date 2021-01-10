@@ -14,6 +14,8 @@ export interface PlaygroundProps {
 const rootStyle = css`
   border: 1px solid rgba(41, 45, 62, 0.1);
   padding: 1rem;
+
+  overflow-x: auto;
 `;
 
 export function Playground(props: PlaygroundProps) {

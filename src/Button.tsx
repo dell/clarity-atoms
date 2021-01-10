@@ -7,15 +7,27 @@ export type ButtonType = 'button' | 'submit' | 'reset';
 
 
 export interface ButtonProps {
+  // Additional class names to be added
   class?: string;
-  type?: ButtonType;
-  title?: string;
-  onClick?: () => void,
-  children?: ComponentChildren;
-  disabled?: boolean;
 
+  // Submit | Rest | Button
+  type?: ButtonType;
+
+  // HTML title attribute
+  title?: string;
+
+  // Click event handler
+  onClick?: () => void;
+
+  // Children items
+  children?: ComponentChildren;
+
+  // Stylign props
+  disabled?: boolean;
   variant?: ButtonVariant;
   compact?: boolean;
+
+  // Access native DOM Button element
   ref?: Ref<any>;
 };
 
@@ -76,6 +88,10 @@ const flat = css`
   &:focus {
     background: var(--ca-button-focus);
   }
+
+  &:disabled {
+    background-color: transparent;
+  }
 `;
 
 const outline = css`
@@ -98,7 +114,8 @@ const outline = css`
   }
 
   &[disabled] {
-    border-color: var(--disabled-light);
+    border-color: var(--ca-disabled-light);
+    background-color: transparent;
   }
 `;
 
@@ -118,7 +135,7 @@ const solid = css`
   }
 
   &[disabled] {
-    background-color: var(--disabled-light);
+    background-color: var(--ca-disabled-light);
   }
 `;
 
