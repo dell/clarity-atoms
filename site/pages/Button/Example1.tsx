@@ -5,8 +5,12 @@ import { Button } from 'clarity-atoms/Button';
 const rootStyle = css`
   display: grid;
 
-  grid-template-columns: repeat(3, min-content);
   grid-gap: 1rem;
+  justify-items: start;
+
+  @media (min-width: 541px) {
+    grid-template-columns: repeat(3, min-content);
+  }
 `;
 
 export default function Example1() {

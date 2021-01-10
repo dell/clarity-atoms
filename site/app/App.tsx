@@ -23,6 +23,7 @@ const rootStyle = css`
 
 const sectionStyle = css`
   position: relative;
+  min-width: 0;
   min-height: 0;
 
   @media (min-width: 768px) {
