@@ -5,12 +5,12 @@ import { noop } from 'rxjs';
 import styler from 'stylefire';
 
 import { borderSecondary } from '../color';
-
-import { makePlacement$ } from './strategy/bottom';
 import { Surface } from '../portal/Surface';
 
+import { makePlacement$ } from './strategy/bottom';
 
-export interface DropdownHook {
+
+export interface UseDropdownHook {
   isOpen: boolean;
   open: () => void;
   close: () => void;
@@ -30,7 +30,7 @@ export interface DropdownHook {
 }
 
 
-export function useDropdown(): DropdownHook {
+export function useDropdown(): UseDropdownHook {
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -102,7 +102,7 @@ export interface DropdownSurfaceProps {
   class?: string;
   surfaceClass?: string;
 
-  dd: DropdownHook;
+  dd: UseDropdownHook;
   children: ComponentChildren;
 }
 

@@ -1,29 +1,16 @@
 import { css, cx } from '@emotion/css';
 import { ComponentChildren, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
+import { JSXInternal } from 'preact/src/jsx';
 
 export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';
 export type ButtonType = 'button' | 'submit' | 'reset';
 
 
-export interface ButtonProps {
-  // Additional class names to be added
-  class?: string;
+type BaseButtonProps = JSXInternal.HTMLAttributes<HTMLButtonElement>
 
-  // Submit | Rest | Button
+export interface ButtonProps extends BaseButtonProps {
   type?: ButtonType;
-
-  // HTML title attribute
-  title?: string;
-
-  // Click event handler
-  onClick?: () => void;
-
-  // Children items
-  children?: ComponentChildren;
-
-  // Stylign props
-  disabled?: boolean;
   variant?: ButtonVariant;
   compact?: boolean;
 

@@ -1,6 +1,7 @@
+import { Ref } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 
-import { DropdownHook, useDropdown } from '../Dropdown/Dropdown';
+import { UseDropdownHook, useDropdown } from '../Dropdown/Dropdown';
 
 
 export interface UseSelectProps<T> {
@@ -13,15 +14,20 @@ export interface UseSelectProps<T> {
 }
 
 
-export interface UseSelectHook extends DropdownHook {
+export interface UseSelectHook<T> extends UseDropdownHook {
   highlighted: number;
+  surfaceProps: {
+    ref: Ref<any>;
+    onKeydown: (e: KeyboardEvent) => void;
+  }
+  select: (x: T) => void;
 }
 
 
 const isDefaultEqual = (a: any, b: any) => a === b;
 
 
-export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook {
+export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook<T>  {
 
   const { isEqual, value, options, onOpen, onClose, onSelect } = props;
 
@@ -45,6 +51,12 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook {
   const close = () => {
     dd.close();
     setHighlighted(-1);
+    onClose?.();
+  };
+
+  const select = (selected: T) => {
+    dd.close();
+    onSelect?.(selected);
     onClose?.();
   };
 
@@ -116,7 +128,6 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook {
     onClick: dd.open
   };
 
-
   const surfaceProps = {
     ...dd.surfaceProps,
     onKeydown
@@ -126,6 +137,7 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook {
     ...dd,
     open,
     close,
+    select,
     surfaceProps,
     anchorProps,
     highlighted
