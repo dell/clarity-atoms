@@ -35,6 +35,7 @@ export function AppNav(props: AppNavProps) {
         <NavItem href='/button'>Button</NavItem>
         <NavItem href='/checkbox'>Checkbox</NavItem>
         <NavItem href='/dialog'>Dialog</NavItem>
+        <NavItem href='/dropdown'>Dropdown</NavItem>
         <NavItem href='/radio'>Radio</NavItem>
         <NavItem href='/simple-select'>Simple Select</NavItem>
       </ul>

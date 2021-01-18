@@ -1,9 +1,6 @@
 import { css, cx } from '@emotion/css';
 import { ComponentChildren } from 'preact';
-import { useEffect, useRef } from 'preact/hooks';
-
-import { Checkbox } from '../Checkbox';
-import { Radio } from '../Radio';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 
 export interface ListItemProps<T> {
@@ -43,21 +40,11 @@ const listItemStyle = css`
   }
 
   &.${disabledName} {
+    background-color: initial;
     opacity: 0.75;
   }
 `;
 
-const listInputStyle = css`
-  margin-right: 1rem;
-  display: flex;
-  align-items: center;
-`;
-
-const listItemContentStyle = css`
-  min-width: 0;
-
-  flex-grow: 1;
-`;
 
 
 export function ListItem<T>(props: ListItemProps<T>) {
@@ -65,6 +52,7 @@ export function ListItem<T>(props: ListItemProps<T>) {
   const { mode, context, children, disabled, focused, selected, onRemove, onSelect } = props;
 
   const elmRef = useRef<HTMLDivElement>(null);
+  // const [elmRef, setElmRef] = useState<HTMLDivElement | null>(null);
 
   // Attempt to scroll the highlighted item into the view
   useEffect(() => {
@@ -94,14 +82,36 @@ export function ListItem<T>(props: ListItemProps<T>) {
 
   return (
     <div class={classes} onClick={onClick} tabIndex={-1} ref={elmRef}>
-      {mode && (
-        <div class={listInputStyle}>
-          {mode === 'multiselect'
-            ? <Checkbox class='list__item__input' checked={selected} disabled={disabled} />
-            : <Radio class='list__item__input' checked={selected} />}
-          </div>
-      )}
-      <div class={cx('list__item__main', listItemContentStyle)}>{children}</div>
+      {children}
     </div>
+  );
+}
+
+
+const dividerStyle = css`
+  border: 0;
+  height: 1px;
+`;
+
+const primaryStyle = css`
+  background: var(--ca-border);
+`;
+
+const secondaryStyle = css`
+  background: var(--ca-border-secondary);
+`;
+
+
+export function Divider(props: { class?: string; type?: 'primary' | 'secondary'; }) {
+
+  const { type = 'primary' } = props;
+
+  const classes = cx(
+    props.class,
+    dividerStyle, type === 'primary'
+      ? primaryStyle : secondaryStyle);
+
+  return (
+    <hr class={classes} />
   );
 }

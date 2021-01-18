@@ -1,4 +1,4 @@
-import { SimpleSelect } from '../../../src/Select/Select';
+import { SimpleSelect } from '../../../src/Select/SimpleSelect';
 
 
 export interface FruitList {

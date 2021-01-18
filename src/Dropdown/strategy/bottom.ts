@@ -9,7 +9,7 @@ export type Alignment = 'left' | 'right' | 'auto';
 
 export function makePlacement$(align: Alignment, anchor: Element, popper: Element): Observable<any> {
 
-  const init$ = Observable.create((obs: Observer<any>) => {
+  const init$ = new Observable((obs: Observer<any>) => {
     // Calculate synchronously on each subscription
     // to calculate the initial position.
     const strategy = getStrategy(align, anchor, popper);

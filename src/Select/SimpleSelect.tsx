@@ -3,7 +3,7 @@ import { ComponentChildren } from 'preact';
 
 import { Button } from '../Button';
 import { border, primary } from '../color';
-import { DropdownSurface } from '../Dropdown/Dropdown';
+import { DropdownSurface } from '../Dropdown/useDropdownEffect';
 import { SVGIcon } from '../icons/SVGIcon';
 import { ListItem } from '../List/ListItem';
 

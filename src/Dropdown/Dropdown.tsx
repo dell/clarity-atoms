@@ -1,156 +1,73 @@
-import { css, cx } from '@emotion/css';
-import { ComponentChildren, Ref } from 'preact';
-import { useState, useLayoutEffect } from 'preact/hooks';
-import { noop } from 'rxjs';
-import styler from 'stylefire';
+import { cloneElement, ComponentChildren, Fragment, VNode } from 'preact';
+import { Children } from 'preact/compat';
 
-import { borderSecondary } from '../color';
-import { Surface } from '../portal/Surface';
+import { ListValue, useList } from '../List/useList';
 
-import { makePlacement$ } from './strategy/bottom';
+import { DropdownSurface, useDropdownEffect } from './useDropdownEffect';
 
 
-export interface UseDropdownHook {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
-
-  anchor: HTMLElement | null;
-  surface: HTMLElement | null;
-
-  anchorProps: {
-    ref: Ref<any>;
-    [key: string]: any;
-  };
-
-  surfaceProps: {
-    ref: Ref<any>;
-    [key: string]: any;
-  };
-}
-
-
-export function useDropdown(): UseDropdownHook {
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Use as a Ref<Element>
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-  const [surface, setSurface] = useState<HTMLElement | null>(null);
-
-  // Positioning effect and animation
-  useLayoutEffect(() => {
-
-    if (isOpen && anchor && surface) {
-
-      const surfaceStyler = styler(surface);
-      const stream$ = makePlacement$('auto', anchor, surface);
-
-      // Highlight the surface.
-      surface.focus();
-
-      const sub = stream$
-        .subscribe((x) => {
-          surfaceStyler.set(x);
-        });
-
-      return () => sub.unsubscribe();
-
-    } else {
-      return noop;
-    }
-
-  }, [isOpen, anchor, surface]);
-
-
-  const open = () => setIsOpen(true);
-  const close = () => {
-    setIsOpen(false);
-    anchor?.focus();
-  }
-
-  // Handle escape key.
-  // For non-escape key, bubble up the event.
-  const onKeydown = (e: KeyboardEvent) => {
-
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-
-      close();
-    }
-  };
-
-
-  return {
-    isOpen,
-    open,
-    close,
-    anchor,
-    surface,
-    anchorProps: {
-      ref: setAnchor
-    },
-    surfaceProps: {
-      ref: setSurface,
-      onKeydown
-    }
-  };
-}
-
-export interface DropdownSurfaceProps {
-  class?: string;
+export interface DropdownProps<T> {
+  children: VNode<{ onClick: () => void; }>;
+  surface: (close: () => void, highlighted?: T) => ComponentChildren;
   surfaceClass?: string;
 
-  dd: UseDropdownHook;
-  children: ComponentChildren;
+  // Usage of list is complete optional
+  options?: ListValue<T>[];
+  value?: ListValue<T>;
 }
 
 
-const dropdownStyle = css`
-  position: absolute;
-  display: flex;
-  margin-top: 0.5rem;
-
-  flex-direction: column;
-
-  background: #FFFFFF;
-  border: 1px solid ${borderSecondary};
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
-  outline: none;
-
-  overflow: auto;
-`;
-
-export const dropdownItemStyle = css`
-  padding: 1rem 1.5rem;
-
-  &:hover {
-    text-decoration: none;
-    background-color: #F0F0F0;
-  }
-`;
+export function Dropdown<T>(props: DropdownProps<T>) {
 
 
-const surfaceStyle = css`
-  perspective: 800px;
-`;
+  const { children, options, surface, surfaceClass } = props;
 
-const overlayStyle = css`
-  background-color: rgba(0, 0, 0, 0.015);
-`;
+  const dde = useDropdownEffect();
 
+  const list = useList(options || [], {
+    keydown: {
+      Tab(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dde.close();
+      }
+    }
+  });
 
-export function DropdownSurface(props: DropdownSurfaceProps) {
+  const dd = {
+    ...dde,
+    surfaceProps: {
+      ...dde.surfaceProps,
 
-  const { dd, children, surfaceClass } = props;
+      onKeydown(e: KeyboardEvent) {
+        list.onKeydown(e);
+        dde.surfaceProps.onKeydown(e);
+
+        // TODO: Should this be here.
+        // This will block all the actions.
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  };
+
+  const anchorChild = cloneElement(Children.only(children) as any);
+  const onAnchorClick =  (anchorChild.props as any).onClick;
+
+  const onClick = () => {
+    dd.open();
+    onAnchorClick?.();
+  };
+
+  anchorChild.ref = dd.anchorProps.ref;
+  anchorChild.props = {...anchorChild.props, onClick };
 
   return (
-    <Surface class={cx(surfaceStyle, surfaceClass)} overlayClass={overlayStyle}
-      attached={dd.isOpen} onBackdropClick={dd.close}>
-        <div {...dd.surfaceProps} class={cx(dropdownStyle, props.class)} tabIndex={-1}>
-          {children}
-        </div>
-    </Surface>
+    <Fragment>
+      {anchorChild}
+      <DropdownSurface dd={dd} surfaceClass={surfaceClass}>
+        {surface(dd.close, list.highlighted ?? undefined)}
+      </DropdownSurface>
+    </Fragment>
   );
 }

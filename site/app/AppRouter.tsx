@@ -3,6 +3,7 @@ import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button/Button.mdx';
 import DialogDocs from '../pages/Dialog/Dialog.mdx';
+import DropdownDocs from '../pages/Dropdown/Dropdown.mdx';
 import SimpleSelectDocs from '../pages/SimpleSelect/SimpleSelect.mdx';
 
 import { CheckboxExample } from '../pages/CheckboxExample';
@@ -27,9 +28,10 @@ export function AppRouter(props: AppRouterProps) {
       <Router>
         <Home path='/' />
         <ButtonDocs path='/button' />
-        <CheckboxExample path='/checkbox'/>
-        <DialogDocs path='/dialog'/>
-        <RadioExample path='/radio'/>
+        <CheckboxExample path='/checkbox' />
+        <DialogDocs path='/dialog' />
+        <DropdownDocs path='/dropdown' />
+        <RadioExample path='/radio' />
         <SimpleSelectDocs path='/simple-select' />
       </Router>
     </div>

@@ -1,7 +1,7 @@
 import { Ref } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 
-import { UseDropdownHook, useDropdown } from '../Dropdown/Dropdown';
+import { UseDropdownEffectHook, useDropdownEffect } from '../Dropdown/useDropdownEffect';
 
 
 export interface UseSelectProps<T> {
@@ -14,7 +14,7 @@ export interface UseSelectProps<T> {
 }
 
 
-export interface UseSelectHook<T> extends UseDropdownHook {
+export interface UseSelectHook<T> extends UseDropdownEffectHook {
   highlighted: number;
   surfaceProps: {
     ref: Ref<any>;
@@ -32,7 +32,7 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook<T>  {
   const { isEqual, value, options, onOpen, onClose, onSelect } = props;
 
   const [highlighted, setHighlighted] = useState(-1);
-  const dd = useDropdown();
+  const dd = useDropdownEffect();
 
 
   useEffect(() => {
