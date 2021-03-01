@@ -61,11 +61,6 @@ export function useList<T>(options: ListValue<T>[], props: UseListProps<T>) {
     },
 
     Escape: keydown?.Escape
-    // Escape(e) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    //   close();
-    // }
   });
 
   return {
@@ -77,8 +72,6 @@ export function useList<T>(options: ListValue<T>[], props: UseListProps<T>) {
 
 
 function getNext<T>(options: ListValue<T>[], current: number, visited: number = 0): number | null {
-
-  console.log('getNext', options.length, current, visited);
 
   const length = options.length;
 
@@ -107,7 +100,7 @@ function getPrevious<T>(options: ListValue<T>[], current: number, visited: numbe
     return null;
   }
 
-  const nextIndex = current > 1 ? (current - 1) : length - 1;
+  const nextIndex = current > 0 ? (current - 1) : length - 1;
 
   if (options[nextIndex].disabled) {
     return getPrevious(options, nextIndex, visited + 1);

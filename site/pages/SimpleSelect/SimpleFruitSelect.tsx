@@ -9,7 +9,9 @@ export interface FruitList {
 
 const fruits: FruitList[] = [
   { id: 1, displayName: 'Green Apples', urlSlug: 'green-apples' },
-  { id: 2, displayName: 'Mangoes', urlSlug: 'mangoes' }
+  { id: 2, displayName: 'Mangoes', urlSlug: 'mangoes' },
+  { id: 3, displayName: 'Oranges', urlSlug: 'oranges' },
+  { id: 4, displayName: 'Water melons', urlSlug: 'water-melons' }
 ];
 
 
