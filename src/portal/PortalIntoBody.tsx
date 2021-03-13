@@ -54,7 +54,7 @@ export const PortalIntoBody = forwardRef(
       classes && mountElm.classList.add(classes);
 
       return () => classes && mountElm.classList.remove(classes);
-    }, [classes]);
+    }, [classes, mountElm]);
 
 
     // Manually set reference, since `mountElm` is a floating element

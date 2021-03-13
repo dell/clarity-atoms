@@ -11,6 +11,7 @@ export interface SurfaceProps {
   children: ComponentChildren;
 
   overlay?: 'transparent' | 'dark';
+  blocking?: boolean;
   attached: boolean;
   onBackdropClick?: () => void;
 }
@@ -18,13 +19,13 @@ export interface SurfaceProps {
 
 export function Surface(props: SurfaceProps) {
 
-  const { children, attached, overlay, overlayClass, onBackdropClick } = props;
+  const { children, attached, overlay, blocking, overlayClass, onBackdropClick } = props;
 
   const overlayStyle = overlay === 'dark' ? darkOverlay : transparentOverlay;
 
   const surface = () => (
     <PortalIntoBody class={props.class}>
-      <div class={cx('backdrop', overlayStyle, overlayClass)} onClick={onBackdropClick}></div>
+      {blocking && <div class={cx('backdrop', overlayStyle, overlayClass)} onClick={onBackdropClick}></div>}
       {children}
     </PortalIntoBody>
   );

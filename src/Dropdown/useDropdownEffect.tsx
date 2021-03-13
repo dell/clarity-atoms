@@ -1,14 +1,19 @@
 import { css, cx } from '@emotion/css';
 import { ComponentChildren, Ref } from 'preact';
-import { useState, useLayoutEffect } from 'preact/hooks';
-import { noop } from 'rxjs';
+import { useState, useLayoutEffect, useEffect } from 'preact/hooks';
+import { fromEvent, noop } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import styler from 'stylefire';
 
 import { borderSecondary } from '../color';
 import { Surface } from '../portal/Surface';
 
-import { makePlacement$ } from './strategy/bottom';
+import { getRect$, makeAnimation$, makePlacement } from './strategy';
 
+
+export interface UseDropdownEffectHookProps {
+  followWidth: boolean;
+}
 
 export interface UseDropdownEffectHook {
   isOpen: boolean;
@@ -38,36 +43,73 @@ export function useDropdownEffect(): UseDropdownEffectHook {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [surface, setSurface] = useState<HTMLElement | null>(null);
 
+  // NOTE: open and close must be stable functions.
+  // They are used in the side effect.
+  const open = () => setIsOpen(true);
+  const close = () => {
+    setIsOpen(false);
+    anchor?.focus();
+  };
+
   // Positioning effect and animation
   useLayoutEffect(() => {
 
     if (isOpen && anchor && surface) {
 
       const surfaceStyler = styler(surface);
-      const stream$ = makePlacement$('auto', anchor, surface);
+      const oRect = anchor.getBoundingClientRect();
+      const values = makePlacement(anchor, surface);
 
       // Highlight the surface.
       surface.focus();
 
-      const sub = stream$
+      // Add the directional class
+      surface.classList.add(values.strategy);
+
+      // Set initial values
+      surfaceStyler.set(values);
+
+      // Run animation
+      const sub1 = makeAnimation$(values.strategy)
         .subscribe((x) => {
           surfaceStyler.set(x);
         });
 
-      return () => sub.unsubscribe();
+      // Whenever anchor's position change, close the popper.
+      const sub2 = getRect$(anchor)
+        .subscribe(({x,y}) => {
+          if (oRect.x !== x || oRect.y !== y) {
+            // Close is stable function and hence
+            close();
+          }
+        });
+
+      return () => {
+        surface.classList.remove(values.strategy);
+        sub1.unsubscribe();
+        sub2.unsubscribe();
+      };
 
     } else {
       return noop;
     }
-
   }, [isOpen, anchor, surface]);
 
 
-  const open = () => setIsOpen(true);
-  const close = () => {
-    setIsOpen(false);
-    anchor?.focus();
-  }
+  // If clicked anywhere on document except anchor or surface, close the popper.
+  useEffect(() => {
+    if (isOpen && anchor && surface) {
+      const click$ = fromEvent(document, 'click').pipe(
+        map((e) => e.composedPath()),
+        filter((path) => !(path.includes(anchor) || path.includes(surface))));
+
+      const sub = click$.subscribe(() => close());
+
+      return () => sub.unsubscribe();
+    } else {
+      return noop;
+    }
+  }, [isOpen, anchor, surface]);
 
   // Handle escape key.
   // For non-escape key, bubble up the event.
@@ -110,7 +152,6 @@ export interface DropdownSurfaceProps {
 const dropdownStyle = css`
   position: absolute;
   display: flex;
-  margin-top: 0.5rem;
 
   flex-direction: column;
 
@@ -120,6 +161,31 @@ const dropdownStyle = css`
   outline: none;
 
   overflow: auto;
+  pointer-events: all;
+
+  &.left-top {
+    left: 0;
+    top: 0;
+    transform-origin: left top;
+  }
+
+  &.left-bottom {
+    left: 0;
+    bottom: 0;
+    transform-origin: left bottom;
+  }
+
+  &.right-top {
+    right: 0;
+    top: 0;
+    transform-origin: right top;
+  }
+
+  &.right-bottom {
+    right: 0;
+    bottom: 0;
+    transform-origin: right bottom;
+  }
 `;
 
 export const dropdownItemStyle = css`
@@ -133,7 +199,12 @@ export const dropdownItemStyle = css`
 
 
 const surfaceStyle = css`
+  width: 100%;
+  height: 100%;
+
   perspective: 800px;
+
+  pointer-events: none;
 `;
 
 const overlayStyle = css`
