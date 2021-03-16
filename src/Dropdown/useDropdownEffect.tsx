@@ -12,7 +12,7 @@ import { getRect$, makeAnimation$, makePlacement } from './strategy';
 
 
 export interface UseDropdownEffectHookProps {
-  followWidth: boolean;
+  followWidth?: boolean;
 }
 
 export interface UseDropdownEffectHook {
@@ -35,7 +35,9 @@ export interface UseDropdownEffectHook {
 }
 
 
-export function useDropdownEffect(): UseDropdownEffectHook {
+export function useDropdownEffect(props: UseDropdownEffectHookProps = {}): UseDropdownEffectHook {
+
+  const { followWidth = false } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -70,7 +72,7 @@ export function useDropdownEffect(): UseDropdownEffectHook {
       surfaceStyler.set(values);
 
       // Run animation
-      const sub1 = makeAnimation$(values.strategy)
+      const sub1 = makeAnimation$(followWidth)
         .subscribe((x) => {
           surfaceStyler.set(x);
         });
@@ -93,7 +95,7 @@ export function useDropdownEffect(): UseDropdownEffectHook {
     } else {
       return noop;
     }
-  }, [isOpen, anchor, surface]);
+  }, [isOpen, anchor, surface, followWidth]);
 
 
   // If clicked anywhere on document except anchor or surface, close the popper.
@@ -111,19 +113,6 @@ export function useDropdownEffect(): UseDropdownEffectHook {
     }
   }, [isOpen, anchor, surface]);
 
-  // Handle escape key.
-  // For non-escape key, bubble up the event.
-  const onKeydown = (e: KeyboardEvent) => {
-
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-
-      close();
-    }
-  };
-
-
   return {
     isOpen,
     open,
@@ -134,8 +123,7 @@ export function useDropdownEffect(): UseDropdownEffectHook {
       ref: setAnchor
     },
     surfaceProps: {
-      ref: setSurface,
-      onKeydown
+      ref: setSurface
     }
   };
 }
@@ -161,7 +149,7 @@ const dropdownStyle = css`
   outline: none;
 
   overflow: auto;
-  pointer-events: all;
+  pointer-events: auto;
 
   &.left-top {
     left: 0;

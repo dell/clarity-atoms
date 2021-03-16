@@ -4,8 +4,9 @@ import { Fragment } from 'preact';
 import { useMemo } from 'preact/hooks';
 
 import { Button } from 'clarity-atoms/Button';
-import { Dropdown } from 'clarity-atoms/Dropdown/Dropdown';
 import { Divider, ListItem } from 'clarity-atoms/List/ListItem';
+import { DropdownSurface } from 'clarity-atoms/Dropdown/useDropdownEffect';
+import { useDropdown } from 'clarity-atoms/Dropdown/useDropdown';
 
 const headingStyle = css`
   margin: 0.25rem 0.5rem;
@@ -65,32 +66,25 @@ export default function DropdownExample() {
     }, {} as any),
   [dropdownOptions]);
 
+  const dd = useDropdown({ options: dropdownOptions });
 
-  const surfaceElm = (close: any, highlighted?: DropdownOption) => (
-    <div class={surfaceStyle}>
-      {categories.map((category, index) => {
-        return (
+
+  return (
+    <div>
+      <Button onClick={dd.open} ref={dd.anchorProps.ref}>Manage with Hook</Button>
+      <DropdownSurface dd={dd} class={surfaceStyle}>
+        {categories.map((category, index) => (
           <Fragment>
             {index > 0 && <Divider type='secondary' />}
             <div class={headingStyle}>{category}</div>
             {options[category].map((item) => (
               <ListItem class={menuItemStyle}
-                disabled={item.disabled} focused={item === highlighted}
-                context={item} onSelect={() => close()}>{item.label}</ListItem>
+                disabled={item.disabled} focused={item === dd.focused}
+                context={item} onSelect={dd.close}>{item.label}</ListItem>
             ))}
           </Fragment>
-        );
-      })}
-    </div>
-  );
-
-  return (
-    <div>
-      <Dropdown surface={surfaceElm} options={dropdownOptions}>
-        <Button>
-          Manage
-        </Button>
-      </Dropdown>
+        ))}
+      </DropdownSurface>
     </div>
   );
 }

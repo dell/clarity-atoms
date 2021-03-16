@@ -52,14 +52,13 @@ export function ListItem<T>(props: ListItemProps<T>) {
   const { mode, context, children, disabled, focused, selected, onRemove, onSelect } = props;
 
   const elmRef = useRef<HTMLDivElement>(null);
-  // const [elmRef, setElmRef] = useState<HTMLDivElement | null>(null);
 
   // Attempt to scroll the highlighted item into the view
   useEffect(() => {
     if (focused && elmRef.current) {
-      elmRef.current.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+      elmRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
-  }, [focused, elmRef]);
+  }, [focused, elmRef.current]);
 
 
   const onClick = () => {

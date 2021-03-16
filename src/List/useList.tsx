@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 
-import { KeyboardHandlerProps, makeKeyboardHandler } from '../util/keyboard';
 
 export interface ListItem {
   disabled?: boolean;
@@ -9,64 +8,41 @@ export interface ListItem {
 export type ListValue<T> = T & ListItem;
 
 export interface UseListProps<T> {
+  options: ListValue<T>[];
   value?: ListValue<T>;
-  onSelect?: (value: ListValue<T>) => void;
-  keydown?: KeyboardHandlerProps;
+}
+
+export interface UseList<T> {
+  focused: ListValue<T> | null;
+  focusedIndex: number;
+  setNext: () => void;
+  setPrevious: () => void;
+  reset: () => void;
 }
 
 
-export function useList<T>(options: ListValue<T>[], props: UseListProps<T>) {
+export function useList<T>(props: UseListProps<T>): UseList<T> {
 
-  const { keydown, value, onSelect } = props;
+  const { options, value } = props;
 
-  const [highlighted, setHighlighted] = useState(-1);
+  // Maintain the currently highlighted item
+  const [active, setActive] = useState(-1);
 
+  const defaultActive = useMemo(() => options.findIndex((x) => x === value), [options, value]);
 
-  useEffect(() => {
-    // Reset the highlighted item
-    setHighlighted(-1);
-  } , [options]);
+  // Reset the highlighted item whenever options or value change.
+  useEffect(() => setActive(defaultActive), [defaultActive]);
 
-  const onKeydown = makeKeyboardHandler({
-    Tab: keydown?.Tab,
-
-    Enter(e) {
-      if (highlighted > -1) {
-        onSelect?.(options[highlighted]);
-      }
-      keydown?.Enter?.(e);
-    },
-
-    ArrowDown(e) {
-      const nextIndex = getNext(options, highlighted);
-
-      if (nextIndex !== null) {
-        setHighlighted(nextIndex);
-      }
-      keydown?.ArrowDown?.(e);
-    },
-
-    ArrowUp(e) {
-      const previousIndex = getPrevious(options, highlighted);
-
-      if (previousIndex !== null) {
-        setHighlighted(previousIndex);
-      }
-      keydown?.ArrowUp?.(e);
-    },
-
-    Space(e) {
-      onSelect?.(options[highlighted]);
-      keydown?.Space?.(e);
-    },
-
-    Escape: keydown?.Escape
-  });
+  const setNext = () => setActive(getNext(options, active) ?? -1);
+  const setPrevious = () => setActive(getPrevious(options, active) ?? -1);
+  const reset = () => setActive(defaultActive);
 
   return {
-    highlighted: options[highlighted] ?? null,
-    hightlightedIndex: highlighted,
-    onKeydown
+    focused: options[active] ?? null,
+    focusedIndex: active,
+    setNext,
+    setPrevious,
+    reset
   };
 }
 
@@ -76,8 +52,6 @@ function getNext<T>(options: ListValue<T>[], current: number, visited: number = 
   const length = options.length;
 
   if (length === visited) {
-    return null;
-  } else if (length === 1 && current === 0) {
     return null;
   }
 
@@ -90,13 +64,12 @@ function getNext<T>(options: ListValue<T>[], current: number, visited: number = 
   return nextIndex;
 }
 
+
 function getPrevious<T>(options: ListValue<T>[], current: number, visited: number = 0): number | null {
 
   const length = options.length;
 
   if (length === visited) {
-    return null;
-  } else if (length === 1 && current === 0) {
     return null;
   }
 

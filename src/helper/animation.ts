@@ -17,7 +17,7 @@ function animate$(from: any, to: any) {
 
     const mainAction = animate({
       from, to,
-      duration: 200,
+      duration: 120,
       onUpdate: (v) => obs.next(v),
       onComplete: () => obs.complete()
     });

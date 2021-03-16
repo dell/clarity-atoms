@@ -18,3 +18,10 @@ export function makeKeyboardHandler(props: KeyboardHandlerProps) {
     handler?.(e);
   };
 }
+
+export function prevent(callback: (e: Event) => void) {
+  return (e: Event) => {
+    e.preventDefault();
+    callback(e);
+  };
+}

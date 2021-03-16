@@ -1,7 +1,7 @@
 import { animationFrameScheduler, interval, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { scaleXY } from '../helper/animation';
+import { scaleXY, scaleY } from '../helper/animation';
 
 export type DirectionH = 'left' | 'right';
 export type DirectionV = 'top' | 'bottom';
@@ -17,8 +17,8 @@ export function makePlacement(anchor: Element, popper: Element) {
     return { ...dims, strategy };
 }
 
-export function makeAnimation$(strategy: Strategy): Observable<any> {
-  return scaleXY();
+export function makeAnimation$(followWidth: boolean): Observable<any> {
+  return followWidth ? scaleY() : scaleXY();
 }
 
 export function getRect$(anchor: Element) {
