@@ -2,6 +2,7 @@ import { css } from '@emotion/css';
 import { ComponentChildren, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useEffect, useLayoutEffect, useState } from 'preact/hooks';
+import { noop } from 'rxjs';
 
 import { setRef } from '../helper/preact';
 
@@ -11,9 +12,6 @@ import { Portal } from './Portal';
 export type PortalIntoBodyProps = {
   class?: string;
   children: ComponentChildren;
-
-  // Reference to the DOM Element created by this component
-  // portalElm?: Ref<HTMLDivElement | null>;
 };
 
 
@@ -51,9 +49,15 @@ export const PortalIntoBody = forwardRef(
 
     // Add or remove classes from portal body
     useEffect(() => {
-      classes && mountElm.classList.add(classes);
+      if (classes) {
+        const tokens = classes.split(' ');
 
-      return () => classes && mountElm.classList.remove(classes);
+        mountElm.classList.add(...tokens);
+
+        return () => mountElm.classList.remove(...tokens);
+      }
+
+      return noop;
     }, [classes, mountElm]);
 
 

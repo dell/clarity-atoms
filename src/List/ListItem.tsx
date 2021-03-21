@@ -62,6 +62,8 @@ export function ListItem<T>(props: ListItemProps<T>) {
 
 
   const onClick = () => {
+    console.log('Click');
+
     if (!disabled) {
       if (selected && mode === 'multiselect') {
         onRemove?.(context);
@@ -80,7 +82,7 @@ export function ListItem<T>(props: ListItemProps<T>) {
     props.class);
 
   return (
-    <div class={classes} onClick={onClick} tabIndex={-1} ref={elmRef}>
+    <div class={classes} onClick={onClick} tabIndex={0} ref={elmRef}>
       {children}
     </div>
   );

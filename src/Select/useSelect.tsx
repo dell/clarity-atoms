@@ -1,8 +1,8 @@
 import { Ref } from 'preact';
 
 import { useList } from '../List/useList';
-import { useDropdownSurface } from '../surface/useDropdownSurface';
-import { UseSurfaceHook } from '../surface/useSurface';
+import { useDropdownSurface } from '../Dropdown/useDropdownSurface';
+import { UseSurfaceHook } from '../surface/Surface';
 
 
 export interface UseSelectProps<T> {

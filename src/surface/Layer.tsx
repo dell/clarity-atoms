@@ -25,7 +25,7 @@ export function Layer(props: LayerProps) {
   const overlayStyle = overlay === 'dark' ? darkOverlay : transparentOverlay;
 
   const surface = () => (
-    <PortalIntoBody class={props.class}>
+    <PortalIntoBody class={cx('layer', props.class)}>
       {blocking && <div class={cx('backdrop', overlayStyle, backdropClass)} onClick={onBackdropClick}></div>}
       {children}
     </PortalIntoBody>

@@ -1,8 +1,8 @@
 import { ListValue, useList } from '../List/useList';
-import { useDropdownSurface } from '../surface/useDropdownSurface';
-import { UseSurfaceHook } from '../surface/useSurface';
+import { UseSurfaceHook } from '../surface/Surface';
 import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
+import { useDropdownSurface } from './useDropdownSurface';
 
 
 export interface UseDropdownProps<T> {
