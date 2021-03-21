@@ -6,7 +6,7 @@ import { noop } from 'rxjs';
 import { Button } from '../Button';
 import { SVGIcon } from '../icons/SVGIcon';
 import { DialogContext } from '../helper/internal';
-import { Surface } from '../portal/Surface';
+import { Layer } from '../surface/Layer';
 
 import { useDialog, DialogStrategy } from './dialogHook';
 
@@ -65,11 +65,11 @@ export function Dialog(props: DialogProps) {
 
   return (
     <DialogContext.Provider value={{ onClose: onEscape || noop}}>
-      <Surface attached={open} class={'dialog-surface'} overlay='dark' onBackdropClick={onEscape}>
+      <Layer attached={open} class={'dialog-surface'} backdrop='dark' onBackdropClick={onEscape}>
         <div ref={ref} class={cx('dialog', classes)} tabIndex={-1}>
           {children}
         </div>
-      </Surface>
+      </Layer>
     </DialogContext.Provider>
   );
 }

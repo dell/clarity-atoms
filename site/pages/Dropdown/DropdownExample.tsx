@@ -1,12 +1,12 @@
-
 import { css } from '@emotion/css';
 import { Fragment } from 'preact';
 import { useMemo } from 'preact/hooks';
 
 import { Button } from 'clarity-atoms/Button';
-import { Divider, ListItem } from 'clarity-atoms/List/ListItem';
-import { DropdownSurface } from 'clarity-atoms/Dropdown/useDropdownEffect';
 import { useDropdown } from 'clarity-atoms/Dropdown/useDropdown';
+import { Divider, ListItem } from 'clarity-atoms/List/ListItem';
+import { Surface } from 'clarity-atoms/surface/Surface';
+
 
 const headingStyle = css`
   margin: 0.25rem 0.5rem;
@@ -72,7 +72,7 @@ export default function DropdownExample() {
   return (
     <div>
       <Button onClick={dd.open} ref={dd.anchorProps.ref}>Manage with Hook</Button>
-      <DropdownSurface dd={dd} class={surfaceStyle}>
+      <Surface hook={dd} class={surfaceStyle}>
         {categories.map((category, index) => (
           <Fragment>
             {index > 0 && <Divider type='secondary' />}
@@ -84,7 +84,7 @@ export default function DropdownExample() {
             ))}
           </Fragment>
         ))}
-      </DropdownSurface>
+      </Surface>
     </div>
   );
 }

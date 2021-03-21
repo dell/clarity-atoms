@@ -1,7 +1,8 @@
 import { ListValue, useList } from '../List/useList';
+import { useDropdownSurface } from '../surface/useDropdownSurface';
+import { UseSurfaceHook } from '../surface/useSurface';
 import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
-import { useDropdownEffect, UseDropdownEffectHook } from './useDropdownEffect';
 
 
 export interface UseDropdownProps<T> {
@@ -10,7 +11,7 @@ export interface UseDropdownProps<T> {
 }
 
 
-export interface UseDropdownHook<T> extends UseDropdownEffectHook {
+export interface UseDropdownHook<T> extends UseSurfaceHook {
   focused?: ListValue<T>;
 }
 
@@ -19,12 +20,12 @@ export function useDropdown<T>(props: UseDropdownProps<T>): UseDropdownHook<T> {
 
   const { options = [], value } = props;
 
-  const dde = useDropdownEffect();
+  const dds = useDropdownSurface();
   const list = useList({ options, value });
 
   const onKeydown = makeKeyboardHandler({
-    Escape: prevent(dde.close),
-    Tab: prevent(dde.close),
+    Escape: prevent(dds.close),
+    Tab: prevent(dds.close),
 
     Enter(e) {
       if (list.focused) {
@@ -42,14 +43,14 @@ export function useDropdown<T>(props: UseDropdownProps<T>): UseDropdownHook<T> {
 
   const open = () => {
     list.reset();
-    dde.open();
+    dds.open();
   };
 
   return {
-    ...dde,
+    ...dds,
     open,
     surfaceProps: {
-      ...dde.surfaceProps,
+      ...dds.surfaceProps,
       onKeydown
     },
     focused: list.focused ?? undefined,

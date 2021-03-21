@@ -3,9 +3,9 @@ import { ComponentChildren } from 'preact';
 
 import { Button } from '../Button';
 import { border, primary } from '../color';
-import { DropdownSurface } from '../Dropdown/useDropdownEffect';
 import { SVGIcon } from '../icons/SVGIcon';
 import { ListItem } from '../List/ListItem';
+import { Surface } from '../surface/Surface';
 
 import { useSelect } from './useSelect';
 
@@ -141,7 +141,7 @@ export function SimpleSelect<T>(props: SimpleSelectProps<T>) {
         </Button>
       )}
       <SVGIcon name='chevThick' class={chevStyle} />
-      <DropdownSurface dd={dd}>
+      <Surface hook={dd}>
         {options.map((x, index) => (
           <ListItem mode={useMode ? 'single' : undefined} context={x} selected={x === value}
             disabled={x.disabled} focused={dd.highlighted === index}
@@ -149,7 +149,7 @@ export function SimpleSelect<T>(props: SimpleSelectProps<T>) {
               {render(x)}
           </ListItem>
         ))}
-      </DropdownSurface>
+      </Surface>
     </div>
   );
 }

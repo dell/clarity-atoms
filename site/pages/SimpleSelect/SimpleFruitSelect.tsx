@@ -21,6 +21,6 @@ export function SimpleFruitSelect() {
     <SimpleSelect options={fruits} placeholder='Select fruit'
       value={fruits[0]}
       renderAnchor={(x) => (<div>{x?.displayName}</div>)}
-      render={(x) => (x.displayName)}/>
+      render={(x) => (x.displayName)} />
   );
 }
