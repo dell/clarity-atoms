@@ -82,7 +82,7 @@ export function ListItem<T>(props: ListItemProps<T>) {
     props.class);
 
   return (
-    <div class={classes} onClick={onClick} tabIndex={0} ref={elmRef}>
+    <div class={classes} onClick={onClick} tabIndex={-1} ref={elmRef}>
       {children}
     </div>
   );

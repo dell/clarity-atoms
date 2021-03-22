@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { Fragment } from 'preact';
-import { useMemo } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 
 import { Button } from 'clarity-atoms/Button';
 import { useDropdown } from 'clarity-atoms/Dropdown/useDropdown';
@@ -48,7 +48,7 @@ const dropdownOptions: DropdownOption[] = [
   { icon: '', label: 'Disable tunneling', category: 'tunneling' },
   { icon: '', label: 'Send message', category: 'messaging' },
   { icon: '', label: 'Transfer to organization', category: 'device' },
-  { icon: '', label: 'Deactivate SIM', category: 'device' },
+  { icon: '', label: 'Deactivate SIM', category: 'device' }
 ];
 
 const categories = ['data', 'overage', 'tunneling', 'messaging', 'device'];
@@ -56,7 +56,9 @@ const categories = ['data', 'overage', 'tunneling', 'messaging', 'device'];
 
 export default function DropdownExample() {
 
-  const options: { [key: string]: DropdownOption[] } = useMemo(() =>
+  const [selected, setSelected] = useState<DropdownOption | null>(null);
+
+  const options: { [key: string]: DropdownOption[]; } = useMemo(() =>
     dropdownOptions.reduce((acc, next) => {
       acc[next.category] = acc[next.category] ?? [];
 
@@ -66,7 +68,10 @@ export default function DropdownExample() {
     }, {} as any),
   [dropdownOptions]);
 
-  const dd = useDropdown({ options: dropdownOptions });
+  const dd = useDropdown({
+    options: dropdownOptions,
+    onSelect: setSelected
+  });
 
 
   return (
@@ -80,11 +85,12 @@ export default function DropdownExample() {
             {options[category].map((item) => (
               <ListItem class={menuItemStyle}
                 disabled={item.disabled} focused={item === dd.focused}
-                context={item} onSelect={dd.close}>{item.label}</ListItem>
+                context={item} onSelect={dd.select}>{item.label}</ListItem>
             ))}
           </Fragment>
         ))}
       </Surface>
+      <div>Last Selected: {selected?.label}</div>
     </div>
   );
 }

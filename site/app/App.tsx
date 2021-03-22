@@ -69,6 +69,9 @@ const routerStyle = css`
   margin: 0 auto;
   padding: 1.5rem;
   max-width: 980px;
+  min-height: 100%;
+
+  box-sizing: border-box;
 
   border-left: 1px solid #F8F8F8;
   border-right: 1px solid #F8F8F8;

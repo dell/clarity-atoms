@@ -83,9 +83,6 @@ export function useDropdownSurface(props: UseSurfaceHookProps = {}): UseSurfaceH
       const oRect = anchor.getBoundingClientRect();
       const values = makePlacement(anchor, surface);
 
-      // Highlight the surface.
-      surface.focus();
-
       // Add the directional class
       surface.classList.add(values.strategy);
 
@@ -120,6 +117,7 @@ export function useDropdownSurface(props: UseSurfaceHookProps = {}): UseSurfaceH
 
 
   // If clicked anywhere on document except anchor or surface, close the popper.
+  // If browser window is resized, close the popper.
   useEffect(() => {
     if (isOpen && anchor && surface) {
       const click$ = fromEvent(document, 'click').pipe(
