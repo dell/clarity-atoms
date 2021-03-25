@@ -5,6 +5,8 @@ export interface KeyboardHandlerProps {
   Space?: (e: KeyboardEvent) => void;
   ArrowUp?: (e: KeyboardEvent) => void;
   ArrowDown?: (e: KeyboardEvent) => void;
+  ArrowLeft?: (e: KeyboardEvent) => void;
+  ArrowRight?: (e: KeyboardEvent) => void;
   Escape?: (e: KeyboardEvent) => void;
 }
 

@@ -34,6 +34,7 @@ export function AppNav(props: AppNavProps) {
       <ul class={listStyle}>
         <NavItem href='/button'>Button</NavItem>
         <NavItem href='/checkbox'>Checkbox</NavItem>
+        <NavItem href='/datepicker'>Date Picker</NavItem>
         <NavItem href='/dialog'>Dialog</NavItem>
         <NavItem href='/dropdown'>Dropdown</NavItem>
         <NavItem href='/radio'>Radio</NavItem>
