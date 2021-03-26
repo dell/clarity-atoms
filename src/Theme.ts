@@ -37,8 +37,14 @@ export function setupTheme(theme: Theme) {
       --ca-disabled: ${x.disabled};
       --ca-disabled-light: ${x.disabledLight};
 
+      /* Specific styling for components */
+
+      /* Styling for button components */
       --ca-button-hover: ${primaryHover};
       --ca-button-focus: ${primaryFocus};
+
+      /* Styling for DatePicker */
+      --ca-border-hover: ${Color(x.border).lighten(0.18).string()};
     }
   `;
 

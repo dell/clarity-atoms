@@ -1,8 +1,8 @@
 import { css, cx } from '@emotion/css';
+import { noop } from 'rxjs';
 
-import { Button } from '../Button';
-import { SVGIcon } from '../icons/SVGIcon';
-import { MonthInfo } from './useDate';
+import { borderStyle, DatePickerHead } from './DatePickerHead';
+import { MonthInfo, months } from './useDate';
 
 
 export interface MonthViewProps {
@@ -10,48 +10,6 @@ export interface MonthViewProps {
   month: MonthInfo;
 }
 
-const headStyle = css`
-  display: flex;
-  padding: 0.5rem 0.5rem 0;
-
-  justify-content: space-between;
-`;
-
-const borderStyle = css`
-  border: 1px solid transparent;
-  transition: all 120ms ease-out;
-
-  &:hover {
-    border-color: #F0F0F0;
-  }
-`;
-
-const monthStyle = css`
-  ${borderStyle};
-
-  padding: 0.25rem 0.5rem;
-
-  .chev {
-    margin-left: 0.5rem;
-    width: 0.75rem;
-    height: 0.75rem;
-
-    transform: rotateX(180deg);
-  }
-`;
-
-const arrowStyle = css`
-  width: 36px;
-  height: 36px;
-
-  ${borderStyle};
-
-  &.down {
-    margin-left: 0.25rem;
-
-    transform: rotateX(180deg);
-  }
-`;
 
 const gridStyle = css`
   display: grid;
@@ -64,8 +22,8 @@ const gridStyle = css`
 
 const weekStyle = css`
   display: flex;
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
 
   justify-content: center;
   align-items: center;
@@ -81,12 +39,6 @@ const dateStyle = css`
   font-size: inherit;
 `;
 
-const months = [
-  'January', 'February', 'March',
-  'April', 'May', 'June', 'July',
-  'August', 'September', 'October',
-  'November', 'December'];
-
 export function MonthView(props: MonthViewProps) {
 
   const { month } = props;
@@ -98,21 +50,7 @@ export function MonthView(props: MonthViewProps) {
   ));
 
   return (
-    <div class={cx('cla-month-view')}>
-      <div class={headStyle}>
-        <Button class={monthStyle} variant='minimal'>
-          <span>{months[month.month] + ' ' + month.year}</span>
-          <SVGIcon class={'chev'} name='chevThick' />
-        </Button>
-        <div>
-          <Button class={cx(arrowStyle, 'up')} variant='minimal'>
-            <SVGIcon name='chevThick' />
-          </Button>
-          <Button class={cx(arrowStyle, 'down')} variant='minimal'>
-            <SVGIcon name='chevThick' />
-          </Button>
-        </div>
-      </div>
+    <div class={cx('cla-month-view', props.class)}>
       <div class={gridStyle}>
         <div class={weekStyle}>Su</div>
         <div class={weekStyle}>Mo</div>

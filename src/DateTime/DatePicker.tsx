@@ -30,7 +30,7 @@ export function DatePicker(props: DatePickerProps) {
         Date Picker Anchor
       </div>
       <Surface hook={dds}>
-        <DatePickerRenderer month={dt.month} />
+        <DatePickerRenderer monthInfo={dt.month} />
       </Surface>
     </Fragment>
   );

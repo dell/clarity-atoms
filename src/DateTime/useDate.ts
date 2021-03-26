@@ -34,6 +34,12 @@ export interface UseDateHook {
   build: (month: number, year: number) => DayInfo[];
 }
 
+export const months = [
+  ['Jan', 'January'], ['Feb', 'February'], ['Mar', 'March'],
+  ['Apr', 'April'], ['May', 'May'], ['Jun', 'June'],
+  ['Jul', 'July'], ['Aug', 'August'], ['Sep', 'September'],
+  ['Oct', 'October'], ['Nov', 'November'], ['Dec', 'December']
+];
 
 export function useDate(props: UseDateProps): UseDateHook {
 
