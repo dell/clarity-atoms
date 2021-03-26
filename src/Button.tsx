@@ -30,6 +30,9 @@ const base = css`
 
   background: transparent;
   color: var(--ca-primary);
+
+  font-family: inherit;
+  font-size: inherit;
 `;
 
 export const minimal = css`
@@ -109,7 +112,8 @@ const outline = css`
 
 // Backward compatibility with CSM buttons
 const solid = css`
-  ${standard}
+  ${standard};
+
   background-color: var(--ca-primary);
   color: var(--ca-primary-comp);
 
