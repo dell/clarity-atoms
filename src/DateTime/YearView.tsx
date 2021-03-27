@@ -9,7 +9,9 @@ import { months } from './useDate';
 
 export interface YearProps {
   class?: string;
+
   year: number;
+  onAction?: () => void;
 }
 
 
@@ -33,10 +35,12 @@ const gapStyle = css`
 
 export function YearView(props: YearProps) {
 
-  const { year } = props;
+  const { year, onAction } = props;
+
 
   return (
     <div class={cx('cla-year-view', props.class)}>
+      <DatePickerHead label={year} onAction={onAction} navigation={true} />
       <div class={gridStyle}>
         {months.map(([mon, _month]) => {
           return (

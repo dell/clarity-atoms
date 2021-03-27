@@ -49,8 +49,8 @@ export function useDate(props: UseDateProps): UseDateHook {
   const [current, dMin, dMax] =
     useMemo(() => {
       const current = new Date();
-      const minDate = new Date().setFullYear(current.getFullYear() - 120, 0);
-      const maxDate = new Date().setFullYear(current.getFullYear() + 121, 0);
+      const minDate = new Date().setFullYear(current.getFullYear() - 70, 0);
+      const maxDate = new Date().setFullYear(current.getFullYear() + 50, 0);
 
       return [current, minDate, maxDate];
     }, []);

@@ -24,14 +24,17 @@ const rootStyle = css`
 const perspective = css`
   position: relative;
   perspective: 800px;
+  height: 100%;
 `;
 
-const position = css`
-  position: relative;
+const viewStyle = css`
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+
+  overflow: auto;
 `;
 
 
@@ -61,17 +64,12 @@ export function DatePickerRenderer(props: DatePickerRendererProps) {
   const onAction = () => {
     if (view === 'month') {
       setTransition(true);
-      setView('year');
+      setView('century');
     } else if (view === 'year') {
       setTransition(true);
       setView('century');
     }
   };
-
-  const label = view === 'month'
-    ? months[monthInfo.month][1] + ' ' + monthInfo.year
-    : monthInfo.year;
-
 
   const isCenturyView = view === 'century';
   const isMonthView = view === 'month' || (view === 'year' && transition);
@@ -79,15 +77,21 @@ export function DatePickerRenderer(props: DatePickerRendererProps) {
 
   return (
     <div ref={setRef} class={cx(rootStyle, 'cla-date-picker-renderer')}>
-      <DatePickerHead label={label} onAction={onAction} navigation={true} />
       <div class={perspective}>
-        {isCenturyView && <CenturyView class={position} minYear={1900} maxYear={2100} />}
-        {isYearView && <YearView class={position} year={monthInfo.year} />}
-        {isMonthView && <MonthView class={position} month={monthInfo} />}
+        {isCenturyView &&
+          <CenturyView class={viewStyle} year={monthInfo.year}
+            minYear={1900} maxYear={2100} />}
+
+        {isYearView &&
+          <YearView class={viewStyle} year={monthInfo.year} onAction={onAction} />}
+
+        {isMonthView &&
+          <MonthView class={viewStyle} monthInfo={monthInfo} onAction={onAction} />}
       </div>
     </div>
   );
 }
+
 
 function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void) {
 
@@ -95,7 +99,7 @@ function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void
   const scaleOutElm = styler(scaleOut);
 
   const enter = animate({
-    from: { opacity: 0, scale: 1.2 },
+    from: { opacity: 0, scale: 1.3 },
     to: { opacity: 1, scale: 1 },
     duration: 240,
     onUpdate: (x) => scaleInElm.set(x)

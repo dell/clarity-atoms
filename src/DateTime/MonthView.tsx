@@ -7,7 +7,9 @@ import { MonthInfo, months } from './useDate';
 
 export interface MonthViewProps {
   class?: string;
-  month: MonthInfo;
+
+  monthInfo: MonthInfo;
+  onAction?: () => void;
 }
 
 
@@ -41,9 +43,11 @@ const dateStyle = css`
 
 export function MonthView(props: MonthViewProps) {
 
-  const { month } = props;
+  const { monthInfo, onAction } = props;
 
-  const daysEl = month.days.map((x) => (
+  const label = months[monthInfo.month][1] + ' ' + monthInfo.year;
+
+  const daysEl = monthInfo.days.map((x) => (
     <div class={dateStyle} tabIndex={-1} style={{ gridColumn: (x.dayOfWeek + 1)}}>
       {x.dayOfMonth}
     </div>
@@ -51,6 +55,7 @@ export function MonthView(props: MonthViewProps) {
 
   return (
     <div class={cx('cla-month-view', props.class)}>
+      <DatePickerHead label={label} onAction={onAction} navigation={true} />
       <div class={gridStyle}>
         <div class={weekStyle}>Su</div>
         <div class={weekStyle}>Mo</div>
