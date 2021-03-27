@@ -9,8 +9,11 @@ export interface DatePickerHeadProps {
 
   label: string | number;
 
-  onAction?: () => void;
   navigation?: boolean;
+
+  onAction?: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
 }
 
 
@@ -25,8 +28,15 @@ export const borderStyle = css`
   border: 1px solid transparent;
   transition: all 120ms ease-out;
 
-  &:hover {
+  &:not([disabled]):hover {
     border-color: var(--ca-border-hover);
+  }
+`;
+
+const disabledStyle = css`
+  &[disabled] {
+    cursor: default;
+    color: var(--ca-disabled);
   }
 `;
 
@@ -42,6 +52,10 @@ const monthStyle = css`
 
     transform: rotateX(180deg);
   }
+
+  &[disabled] {
+    cursor: default;
+  }
 `;
 
 const arrowStyle = css`
@@ -49,6 +63,7 @@ const arrowStyle = css`
   height: 2.25rem;
 
   ${borderStyle};
+  ${disabledStyle};
 
   &.down {
     margin-left: 0.25rem;
@@ -63,21 +78,24 @@ const arrowStyle = css`
 
 export function DatePickerHead(props: DatePickerHeadProps) {
 
-  const { label, onAction, navigation } = props;
+  const { label, onAction, navigation, onPrev, onNext } = props;
 
   return (
     <div class={cx(headStyle, props.class)}>
-      <Button class={monthStyle} variant='minimal' onClick={onAction}>
-        <span>{label}</span>
-        {onAction && <SVGIcon class={'chev'} name='chevThick' />}
+      <Button class={monthStyle} variant='minimal' disabled={!onAction}
+        onClick={onAction}>
+          <span>{label}</span>
+          {onAction && <SVGIcon class={'chev'} name='chevThick' />}
       </Button>
       {navigation && (
         <div>
-          <Button class={cx(arrowStyle, 'up')} variant='minimal'>
-            <SVGIcon name='chevThick' />
+          <Button class={cx(arrowStyle, 'up')} variant='minimal' disabled={!onPrev}
+            onClick={onPrev}>
+              <SVGIcon name='chevThick' />
           </Button>
-          <Button class={cx(arrowStyle, 'down')} variant='minimal'>
-            <SVGIcon name='chevThick' />
+          <Button class={cx(arrowStyle, 'down')} variant='minimal' disabled={!onNext}
+            onClick={onNext}>
+              <SVGIcon name='chevThick' />
           </Button>
         </div>)}
     </div>

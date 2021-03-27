@@ -1,5 +1,5 @@
 import { css, cx } from '@emotion/css';
-import { ComponentChildren, Ref } from 'preact';
+import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
 
@@ -7,7 +7,7 @@ export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';
 export type ButtonType = 'button' | 'submit' | 'reset';
 
 
-type BaseButtonProps = JSXInternal.HTMLAttributes<HTMLButtonElement>
+type BaseButtonProps = JSXInternal.HTMLAttributes<HTMLButtonElement>;
 
 export interface ButtonProps extends BaseButtonProps {
   type?: ButtonType;
@@ -16,7 +16,7 @@ export interface ButtonProps extends BaseButtonProps {
 
   // Access native DOM Button element
   ref?: Ref<any>;
-};
+}
 
 
 const base = css`
@@ -39,6 +39,7 @@ export const minimal = css`
   ${base};
 
   color: inherit;
+  outline: none;
 
   border: none;
 `;
@@ -150,7 +151,7 @@ export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HT
   return (
     <button type={typeDef} title={title} class={classes} ref={ref}
       onClick={onClick} disabled={disabled}>
-      {children}
+        {children}
     </button>
   );
 });
