@@ -65,7 +65,7 @@ export function useDate(props: UseDateProps): UseDateHook {
     const month = pointer.getMonth();
     const year = pointer.getFullYear();
 
-    const days = build(month, year, disabledSet, valueSet, current);
+    const days = buildDays(month, year, disabledSet, valueSet, current);
 
     return { month, year, days };
 
@@ -86,7 +86,7 @@ export function useDate(props: UseDateProps): UseDateHook {
 
 
   const set = (month: number, year: number) => {
-    return build(month, year, disabledSet, valueSet, current);
+    return buildDays(month, year, disabledSet, valueSet, current);
   };
 
   const setNext = () => {
@@ -141,7 +141,7 @@ export function useDate(props: UseDateProps): UseDateHook {
   };
 }
 
-function build(month: number, year: number, disabled: Set<number>, value: Set<number>, current: Date) {
+export function buildDays(month: number, year: number, disabled: Set<number>, value: Set<number>, current: Date) {
   // Start of the Month
   const firstDay = new Date(year, month).getDay();
 
