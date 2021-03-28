@@ -4,7 +4,7 @@ import { useEffect } from 'preact/hooks';
 import { useDropdownSurface } from '../Dropdown/useDropdownSurface';
 import { Surface } from '../surface/Surface';
 
-import { DatePickerRenderer } from './DatePickerRenderer';
+import { Calendar } from './Calendar';
 import { useDate } from './useDate';
 
 
@@ -30,7 +30,7 @@ export function DatePicker(props: DatePickerProps) {
         Date Picker Anchor
       </div>
       <Surface hook={dds}>
-        <DatePickerRenderer monthInfo={dt.month} />
+        <Calendar monthInfo={dt.month} />
       </Surface>
     </Fragment>
   );

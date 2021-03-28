@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 
 import { Button } from '../Button';
 import { borderStyle, DatePickerHead } from './DatePickerHead';
+import { useCentury } from './useCalendar';
 
 export interface CenturyViewProps {
   class?: string;
@@ -34,37 +35,15 @@ export function CenturyView(props: CenturyViewProps) {
 
   const { year, minYear, maxYear, onYear } = props;
 
-  // pageYear holds the reference year around which current page's bounds are drawn.
-  const [pageYear, setPageYear] = useState(year);
+  const { list, onPrev, onNext } = useCentury({
+    size: 20,
+    seedYear: year,
+    maxYear, minYear
+  });
 
-  const startYear = Math.max(pageYear - 10, minYear);
-  const endYear = Math.min(pageYear + 9, maxYear);
+  const label = `${list[0]} - ${list[list.length - 1]}`;
 
-  // Count the endYear also in the calculations.
-  const diff = endYear - startYear + 1;
-
-  const adjustedEndYear = diff < 20
-    ? Math.min(startYear + 19, maxYear)
-    : endYear;
-
-  const finalDiff = adjustedEndYear - startYear + 1;
-
-  // Update page year whenever input year is changed.
-  useEffect(() => setPageYear(year), [year]);
-
-  // There is no point in clicking previous if minYear is hit.
-  const onPrev = (startYear > minYear)
-    ? () => setPageYear(Math.max(startYear - 10, minYear))
-    : undefined;
-
-  const onNext = (adjustedEndYear < maxYear)
-    ? () => setPageYear(Math.min(adjustedEndYear + 11, maxYear))
-    : undefined;
-
-  const label = `${startYear} - ${adjustedEndYear}`;
-
-  const array = new Array(finalDiff).fill(0)
-    .map((_, index) => startYear + index)
+  const listElms = list
     .map((x) => {
       return (
         <Button class={itemStyle} variant={'minimal'}
@@ -78,7 +57,7 @@ export function CenturyView(props: CenturyViewProps) {
     <div class={cx('cla-century-view', props.class)}>
       <DatePickerHead label={label} navigation={true} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle}>
-        {array}
+        {listElms}
       </div>
     </div>
   );
