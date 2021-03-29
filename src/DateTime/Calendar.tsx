@@ -132,15 +132,18 @@ export function Calendar(props: CalendarProps) {
     <div ref={setRef} class={cx(rootStyle, 'cla-date-picker-renderer')}>
       <div class={perspective}>
         {isCenturyView &&
-          <CenturyView class={viewStyle} minYear={1900} maxYear={2100}
-            year={year} onYear={onCenturyToYear} />}
+          <CenturyView class={viewStyle}
+            minYear={state.min.getFullYear()} maxYear={state.max.getFullYear()}
+            year={year} onSelect={onCenturyToYear} />}
 
         {isYearView &&
           <YearView class={viewStyle} year={year}
-            onCentury={onCentury} onMonth={onMonth} />}
+            min={state.min} max={state.max}
+            onCentury={onCentury} onSelect={onMonth} />}
 
         {isMonthView &&
           <MonthView class={viewStyle} year={year} month={month}
+            min={state.min} max={state.max}
             onYear={onMonthToYear} />}
       </div>
     </div>

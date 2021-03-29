@@ -149,7 +149,7 @@ export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HT
   const classes =  cx('catm-button', styles[variantDef], compact && compactStyle, props.class);
 
   return (
-    <button type={typeDef} title={title} class={classes} ref={ref}
+    <button {...props} type={typeDef} title={title} class={classes} ref={ref}
       onClick={onClick} disabled={disabled}>
         {children}
     </button>

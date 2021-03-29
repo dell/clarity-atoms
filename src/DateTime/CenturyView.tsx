@@ -12,7 +12,7 @@ export interface CenturyViewProps {
   minYear: number;
   maxYear: number;
 
-  onYear?: (year: number) => void;
+  onSelect?: (year: number) => void;
 }
 
 const gridStyle = css`
@@ -33,7 +33,7 @@ const itemStyle = css`
 
 export function CenturyView(props: CenturyViewProps) {
 
-  const { year, minYear, maxYear, onYear } = props;
+  const { year, minYear, maxYear, onSelect } = props;
 
   const { list, prev, next } = useCentury({
     size: 20,
@@ -47,7 +47,7 @@ export function CenturyView(props: CenturyViewProps) {
     .map((x) => {
       return (
         <Button class={itemStyle} variant={'minimal'}
-          onClick={() => onYear?.(x)}>
+          onClick={() => onSelect?.(x)}>
             {x}
         </Button>
       );

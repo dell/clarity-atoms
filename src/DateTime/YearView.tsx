@@ -3,16 +3,18 @@ import { Fragment } from 'preact';
 
 import { Button } from '../Button';
 
-import { DatePickerHead } from './DatePickerHead';
-import { months, useYear, YearMonth } from './useCalendar';
+import { borderStyle, DatePickerHead, disabledStyle } from './DatePickerHead';
+import { MonthInfo, useYear, YearMonth } from './useCalendar';
 
 
 export interface YearProps {
   class?: string;
 
+  min: Date;
+  max: Date;
   year: number;
   onCentury: (year: number) => void;
-  onMonth: (value: YearMonth) => void;
+  onSelect: (value: YearMonth) => void;
 }
 
 
@@ -25,6 +27,8 @@ const gridStyle = css`
 `;
 
 const itemStyle = css`
+  ${borderStyle};
+  ${disabledStyle};
   height: 42px;
   padding: 0.5rem;
 `;
@@ -36,25 +40,26 @@ const gapStyle = css`
 
 export function YearView(props: YearProps) {
 
-  const { onCentury, onMonth } = props;
+  const { onCentury, onSelect, min, max } = props;
 
-  const { year, prev, next } = useYear({ seedYear: props.year });
-
-  const onMonthChange1 = (month: number) => onMonth([year, month]);
-  const onMonthChange2 = (month: number) => onMonth([year + 1, month]);
-
+  const { years, prev, next } = useYear({ seedYear: props.year, min, max });
 
   return (
     <div class={cx('cla-year-view', props.class)}>
-      <DatePickerHead label={year} navigation={true}
-        onAction={() => onCentury(year)} onPrev={prev} onNext={next} />
-      <div class={gridStyle}>
-        <MonthList onMonth={onMonthChange1} />
-      </div>
-      <DatePickerHead class={gapStyle} label={year + 1} />
-      <div class={gridStyle}>
-        <MonthList onMonth={onMonthChange2} />
-      </div>
+      {years.map((x, index) => {
+        const onMonthChange = (month: number) => onSelect([x.year, month]);
+
+        return (
+          <Fragment>
+            <DatePickerHead class={cx(index > 0 && gapStyle)} label={x.year}
+              navigation={index === 0} onAction={() => onCentury(x.year)}
+              onPrev={prev} onNext={next} />
+            <div class={gridStyle}>
+              <MonthList months={x.months} onMonth={onMonthChange} />
+            </div>
+          </Fragment>
+        );
+      })}
     </div>
   );
 }
@@ -62,20 +67,21 @@ export function YearView(props: YearProps) {
 
 interface MonthListProps {
   onMonth: (month: number) => void;
+  months: MonthInfo[];
 }
 
 function MonthList(props: MonthListProps) {
 
-  const { onMonth } = props;
+  const { onMonth, months } = props;
 
   return (
     <Fragment>
       {months
-      .map(([mon, _month], index) => {
+      .map((x, index) => {
         return (
-          <Button class={itemStyle} variant='minimal'
+          <Button class={itemStyle} variant='minimal' disabled={x.disabled}
             onClick={() => onMonth(index)}>
-              {mon}
+              {x.abbr}
           </Button>
         );
       })}

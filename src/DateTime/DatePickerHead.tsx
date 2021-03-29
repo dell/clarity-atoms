@@ -33,7 +33,7 @@ export const borderStyle = css`
   }
 `;
 
-const disabledStyle = css`
+export const disabledStyle = css`
   &[disabled] {
     cursor: default;
     color: var(--ca-disabled);

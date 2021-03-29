@@ -1,12 +1,16 @@
 import { css, cx } from '@emotion/css';
 
-import { borderStyle, DatePickerHead } from './DatePickerHead';
+import { Button } from '../Button';
+
+import { borderStyle, DatePickerHead, disabledStyle } from './DatePickerHead';
 import { months, useMonth, YearMonth } from './useCalendar';
 
 
 export interface MonthViewProps {
   class?: string;
 
+  min: Date;
+  max: Date;
   year: number;
   month: number;
   onYear: (value: YearMonth) => void;
@@ -36,6 +40,8 @@ const weekStyle = css`
 
 const dateStyle = css`
   ${weekStyle};
+  ${disabledStyle};
+
   min-height: 2rem;
 
   cursor: pointer;
@@ -45,19 +51,18 @@ const dateStyle = css`
 
 export function MonthView(props: MonthViewProps) {
 
-  const { onYear } = props;
+  const { onYear, min, max } = props;
 
-  const hook = useMonth({ month: props.month, year: props.year });
+  const hook = useMonth({
+    min, max,
+    month: props.month,
+    year: props.year
+  });
 
   const { days, year, month, prev, next } = hook;
 
   const label = months[month][1] + ' ' + year;
 
-  const daysEl = days.map((x) => (
-    <div class={dateStyle} tabIndex={-1} style={{ gridColumn: (x.dayOfWeek + 1)}}>
-      {x.dayOfMonth}
-    </div>
-  ));
 
   return (
     <div class={cx('cla-month-view', props.class)}>
@@ -71,7 +76,12 @@ export function MonthView(props: MonthViewProps) {
         <div class={weekStyle}>Th</div>
         <div class={weekStyle}>Fr</div>
         <div class={weekStyle}>Sa</div>
-        {daysEl}
+        {days.map((x) => (
+          <Button class={cx(dateStyle)} variant={'minimal'} disabled={x.disabled}
+            style={{ gridColumn: (x.dayOfWeek + 1)}}>
+              {x.dayOfMonth}
+          </Button>
+        ))}
       </div>
     </div>
   );
