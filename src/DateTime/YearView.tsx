@@ -1,12 +1,10 @@
 import { css, cx } from '@emotion/css';
-import { useState } from 'preact/hooks';
-import { Fragment } from 'preact/jsx-runtime';
+import { Fragment } from 'preact';
 
 import { Button } from '../Button';
 
 import { DatePickerHead } from './DatePickerHead';
-import { YearMonth } from './MonthView';
-import { months } from './useDate';
+import { months, useYear, YearMonth } from './useCalendar';
 
 
 export interface YearProps {
@@ -40,26 +38,16 @@ export function YearView(props: YearProps) {
 
   const { onCentury, onMonth } = props;
 
-  const [local, setLocal] = useState<null | number>(null);
-
-  const year = local ?? props.year;
+  const { year, prev, next } = useYear({ seedYear: props.year });
 
   const onMonthChange1 = (month: number) => onMonth([year, month]);
   const onMonthChange2 = (month: number) => onMonth([year + 1, month]);
-
-  const onPrev = () => {
-    setLocal(year - 2);
-  };
-
-  const onNext = () => {
-    setLocal(year + 2);
-  };
 
 
   return (
     <div class={cx('cla-year-view', props.class)}>
       <DatePickerHead label={year} navigation={true}
-        onAction={() => onCentury(year)} onPrev={onPrev} onNext={onNext} />
+        onAction={() => onCentury(year)} onPrev={prev} onNext={next} />
       <div class={gridStyle}>
         <MonthList onMonth={onMonthChange1} />
       </div>

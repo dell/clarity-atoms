@@ -4,26 +4,32 @@ import { useLayoutEffect, useState } from 'preact/hooks';
 import styler from 'stylefire';
 
 import { CenturyView } from './CenturyView';
-import { MonthView, YearMonth } from './MonthView';
-import { MonthInfo } from './useDate';
+import { MonthView } from './MonthView';
+import { useCalendar, YearMonth } from './useCalendar';
 import { YearView } from './YearView';
 
 
 export interface CalendarProps {
-  monthInfo: MonthInfo;
+  disabled?: Date[];
+  min?: Date;
+  max?: Date;
+
+  value?: Date[];
+  onSelect?: (value: Date) => void;
 }
 
 const rootStyle = css`
   width: 320px;
-  height: 350px;
+  height: 320px;
 
   overflow: hidden;
 `;
 
 const perspective = css`
   position: relative;
-  perspective: 800px;
   height: 100%;
+
+  perspective: 800px;
 `;
 
 const viewStyle = css`
@@ -51,7 +57,7 @@ const centuryView = '.cla-century-view';
 
 export function Calendar(props: CalendarProps) {
 
-  const { monthInfo } = props;
+  const state = useCalendar({});
 
   const [view, setView] = useState<'month' | 'year' | 'century'>('month');
   const [ref, setRef] = useState<null | HTMLDivElement>(null);
@@ -60,13 +66,12 @@ export function Calendar(props: CalendarProps) {
   // Temporary transient state for internal selection
   const [local, setLocal] = useState<YearMonth>([null, null]);
 
-  const year = local[0] ?? monthInfo.year;
-  const month = local[1] ?? monthInfo.month;
+  const year = local[0] ?? state.current.getFullYear();
+  const month = local[1] ?? state.current.getMonth();
 
   const clearMotion = () => setMotion(null);
 
   useLayoutEffect(() => {
-
     if (ref && motion === Motion.MonthToYear) {
       return scaleInScaleOut(
         ref.querySelector(yearView)!,

@@ -5,7 +5,6 @@ import { useDropdownSurface } from '../Dropdown/useDropdownSurface';
 import { Surface } from '../surface/Surface';
 
 import { Calendar } from './Calendar';
-import { useDate } from './useDate';
 
 
 export interface DatePickerProps {
@@ -18,7 +17,6 @@ export function DatePicker(props: DatePickerProps) {
 
   const { value, onChange } = props;
 
-  const dt = useDate({});
   const dds = useDropdownSurface();
 
   // TODO: Temporary
@@ -30,7 +28,7 @@ export function DatePicker(props: DatePickerProps) {
         Date Picker Anchor
       </div>
       <Surface hook={dds}>
-        <Calendar monthInfo={dt.month} />
+        <Calendar />
       </Surface>
     </Fragment>
   );

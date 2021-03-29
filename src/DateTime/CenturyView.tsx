@@ -26,7 +26,7 @@ const gridStyle = css`
 const itemStyle = css`
   ${borderStyle};
 
-  height: 42px;
+  height: 3rem;
   padding: 0.5rem;
 `;
 
@@ -35,7 +35,7 @@ export function CenturyView(props: CenturyViewProps) {
 
   const { year, minYear, maxYear, onYear } = props;
 
-  const { list, onPrev, onNext } = useCentury({
+  const { list, prev, next } = useCentury({
     size: 20,
     seedYear: year,
     maxYear, minYear
@@ -55,7 +55,7 @@ export function CenturyView(props: CenturyViewProps) {
 
   return (
     <div class={cx('cla-century-view', props.class)}>
-      <DatePickerHead label={label} navigation={true} onPrev={onPrev} onNext={onNext} />
+      <DatePickerHead label={label} navigation={true} onPrev={prev} onNext={next} />
       <div class={gridStyle}>
         {listElms}
       </div>

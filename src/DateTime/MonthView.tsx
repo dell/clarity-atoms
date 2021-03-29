@@ -1,9 +1,7 @@
 import { css, cx } from '@emotion/css';
-import { useEffect, useMemo, useState } from 'preact/hooks';
-import { noop } from 'rxjs';
 
 import { borderStyle, DatePickerHead } from './DatePickerHead';
-import { buildDays, MonthInfo, months } from './useDate';
+import { months, useMonth, YearMonth } from './useCalendar';
 
 
 export interface MonthViewProps {
@@ -14,9 +12,6 @@ export interface MonthViewProps {
   onYear: (value: YearMonth) => void;
   onChange?: () => void;
 }
-
-export type YearMonth = [number | null, number | null];
-
 
 const gridStyle = css`
   display: grid;
@@ -30,7 +25,7 @@ const gridStyle = css`
 const weekStyle = css`
   display: flex;
   min-width: 2.25rem;
-  min-height: 2.25rem;
+  min-height: 1.75rem;
 
   justify-content: center;
   align-items: center;
@@ -41,6 +36,7 @@ const weekStyle = css`
 
 const dateStyle = css`
   ${weekStyle};
+  min-height: 2rem;
 
   cursor: pointer;
   font-size: inherit;
@@ -51,31 +47,9 @@ export function MonthView(props: MonthViewProps) {
 
   const { onYear } = props;
 
-  const [local, setLocal] = useState<YearMonth>([null, null]);
+  const hook = useMonth({ month: props.month, year: props.year });
 
-  const year = local[0] ?? props.year;
-  const month = local[1] ?? props.month;
-
-  const days = useMemo(() => buildDays(month, year, new Set(), new Set(), new Date()), [month, year]);
-
-  // Reset local selection when date changes
-  useEffect(() => setLocal([null, null]), [props.year, props.month]);
-
-  const onPrev = () => {
-    if (month === 0) {
-      setLocal([year - 1, 11]);
-    } else {
-      setLocal([year, month - 1]);
-    }
-  };
-
-  const onNext = () => {
-    if (month === 11) {
-      setLocal([year + 1, 0]);
-    } else {
-      setLocal([year, month + 1]);
-    }
-  };
+  const { days, year, month, prev, next } = hook;
 
   const label = months[month][1] + ' ' + year;
 
@@ -88,7 +62,7 @@ export function MonthView(props: MonthViewProps) {
   return (
     <div class={cx('cla-month-view', props.class)}>
       <DatePickerHead label={label} navigation={true}
-        onAction={() => onYear([year, month])} onPrev={onPrev} onNext={onNext} />
+        onAction={() => onYear([year, month])} onPrev={prev} onNext={next} />
       <div class={gridStyle}>
         <div class={weekStyle}>Su</div>
         <div class={weekStyle}>Mo</div>
