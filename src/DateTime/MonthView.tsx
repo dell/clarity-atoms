@@ -3,7 +3,7 @@ import { css, cx } from '@emotion/css';
 import { Button } from '../Button';
 
 import { DatePickerHead } from './DatePickerHead';
-import { borderStyle, currentStyle, disabledStyle } from './style';
+import { borderStyle, currentStyle, disabledStyle, focusStyle } from './style';
 import { months, useMonth, YearMonth } from './useCalendar';
 
 
@@ -17,6 +17,7 @@ export interface MonthViewProps {
 
   year: number;
   month: number;
+  range?: [Date, Date];
   onYear: (value: YearMonth) => void;
   onActivate?: (date: Date) => void;
 }
@@ -46,6 +47,7 @@ const weekStyle = css`
 // 1. standard              2. today              3. selected
 // 4. standard + disabled   5. today + disabled   6. selected + disabled
 // 7. today + selected + disabled
+// 8. range                 9. range + disabled
 const dateStyle = css`
   ${weekStyle};
   min-height: 2rem;
@@ -69,6 +71,10 @@ const dateStyle = css`
     border-color: var(--ca-primary);
   }
 
+  &.range {
+    ${focusStyle};
+  }
+
   /* Case 4 & Case 5: standard/today + disabled */
   &:disabled {
     ${disabledStyle};
@@ -85,10 +91,10 @@ const dateStyle = css`
 
 export function MonthView(props: MonthViewProps) {
 
-  const { min, max, selected, disabled, onYear, onActivate } = props;
+  const { min, max, selected, disabled, range, onYear, onActivate } = props;
 
   const hook = useMonth({
-    min, max, selected, disabled,
+    min, max, selected, disabled, range,
     month: props.month,
     year: props.year
   });
@@ -111,7 +117,7 @@ export function MonthView(props: MonthViewProps) {
         <div class={weekStyle}>Fr</div>
         <div class={weekStyle}>Sa</div>
         {days.map((x) => {
-          const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected');
+          const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected', x.inRange && 'range');
           return (
             <Button class={classes} variant={'minimal'} disabled={x.disabled}
               onClick={() => onActivate?.(x.date)} style={{ gridColumn: (x.dayOfWeek + 1)}}>

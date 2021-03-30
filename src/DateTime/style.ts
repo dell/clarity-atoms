@@ -34,3 +34,7 @@ export const currentStyle = css`
     background: currentColor;
   }
 `;
+
+export const focusStyle = css`
+  border-color: var(--ca-primary);
+`;

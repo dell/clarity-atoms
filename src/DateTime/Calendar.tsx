@@ -15,7 +15,7 @@ export interface CalendarProps {
   max?: Date;
 
   value?: Date[];
-  onSelect?: (value: Date) => void;
+  onActivate?: (value: Date) => void;
 }
 
 const rootStyle = css`
@@ -42,7 +42,7 @@ const viewStyle = css`
   overflow: auto;
 `;
 
-// TODO: Reverse animation sequence
+
 enum Motion {
   MonthToYear,
   YearToCentury,
@@ -50,14 +50,16 @@ enum Motion {
   YearToMonth
 }
 
-const yearView = '.cla-year-view';
 const monthView = '.cla-month-view';
+const yearView = '.cla-year-view';
 const centuryView = '.cla-century-view';
 
 
 export function Calendar(props: CalendarProps) {
 
-  const state = useCalendar({});
+  const { value, min, max, disabled, onActivate } = props;
+
+  const state = useCalendar({ value, min, max, disabled });
 
   const [view, setView] = useState<'month' | 'year' | 'century'>('month');
   const [ref, setRef] = useState<null | HTMLDivElement>(null);
@@ -145,7 +147,7 @@ export function Calendar(props: CalendarProps) {
           <MonthView class={viewStyle} year={year} month={month}
             min={state.min} max={state.max}
             selected={state.value} disabled={state.disabled}
-            onYear={onMonthToYear} />}
+            onYear={onMonthToYear} onActivate={onActivate} />}
       </div>
     </div>
   );

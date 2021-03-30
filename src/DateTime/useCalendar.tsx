@@ -11,6 +11,7 @@ export interface DayInfo {
   selected: boolean;
   isToday: boolean;
   date: Date;
+  inRange: boolean;
 }
 
 export interface MonthInfo {
@@ -192,13 +193,14 @@ export interface UseMonthProps {
   max: Date;
   selected: Set<number>;
   disabled: Set<number>;
+  range?: [Date, Date];
   year: number;
   month: number;
 }
 
 export function useMonth(props: UseMonthProps) {
 
-  const { min, max, selected, disabled } = props;
+  const { min, max, selected, disabled, range } = props;
 
   const [local, setLocal] = useState<YearMonth>([null, null]);
 
@@ -211,8 +213,8 @@ export function useMonth(props: UseMonthProps) {
   const maxYearMonth = max.getMonth();
 
   const days = useMemo(() =>
-    buildDays(month, year, min, max, disabled || new Set(), selected || new Set(), new Date()),
-  [month, year, min, max, selected, disabled]);
+    buildDays(month, year, min, max, disabled || new Set(), selected || new Set(), new Date(), range),
+  [month, year, min, max, selected, disabled, range]);
 
   // Reset local selection when date changes
   useEffect(() => setLocal([null, null]), [props.year, props.month]);
@@ -243,34 +245,38 @@ export function useMonth(props: UseMonthProps) {
 }
 
 
-function buildDays(month: number, year: number, min: Date, max: Date, disabled: Set<number>, value: Set<number>, current: Date): DayInfo[] {
-  // Start of the Month
-  const firstDay = new Date(year, month).getDay();
+function buildDays(month: number, year: number, min: Date, max: Date,
+  disabled: Set<number>, value: Set<number>, current: Date, range?: [Date, Date]): DayInfo[] {
+    // Start of the Month
+    const firstDay = new Date(year, month).getDay();
 
-  // Number of Days - Date values round around for the given month if the value '40' is greater than the
-  // number of days allowed in a month. So substracting the new value from '40' gives us actual days in that month.
-  const dayOfMonth = new Date(year, month, 40).getDate();
-  const totalDays = 40 - dayOfMonth;
+    // Number of Days - Date values round around for the given month if the value '40' is greater than the
+    // number of days allowed in a month. So substracting the new value from '40' gives us actual days in that month.
+    const dayOfMonth = new Date(year, month, 40).getDate();
+    const totalDays = 40 - dayOfMonth;
 
-  const days = new Array(totalDays)
-    .fill(0)
-    .map((_, index) => {
-      const date = new Date(year, month, index + 1);
-      const isDisabled =  dateInSet(disabled, date) || date < min || date > max;
+    const days = new Array(totalDays)
+      .fill(0)
+      .map((_, index) => {
+        const date = new Date(year, month, index + 1);
+        const isDisabled =  dateInSet(disabled, date) || date < min || date > max;
 
-      const dayInfo: DayInfo = {
-        date,
-        dayOfWeek: (firstDay + index) % 7 as any,
-        dayOfMonth: date.getDate(),
-        disabled: isDisabled,
-        selected: dateInSet(value, date),
-        isToday: isDateEq(date, current)
-      };
+        const inRange = !!range && date >= range[0] && date <= range[1];
 
-      return dayInfo;
-    });
+        const dayInfo: DayInfo = {
+          date,
+          dayOfWeek: (firstDay + index) % 7 as any,
+          dayOfMonth: date.getDate(),
+          disabled: isDisabled,
+          selected: dateInSet(value, date),
+          isToday: isDateEq(date, current),
+          inRange
+        };
 
-  return days;
+        return dayInfo;
+      });
+
+    return days;
 };
 
 
