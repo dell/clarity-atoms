@@ -1,8 +1,9 @@
 import { css, cx } from '@emotion/css';
-import { useEffect, useState } from 'preact/hooks';
 
 import { Button } from '../Button';
-import { borderStyle, DatePickerHead } from './DatePickerHead';
+
+import { DatePickerHead } from './DatePickerHead';
+import { borderStyle, currentStyle } from './style';
 import { useCentury } from './useCalendar';
 
 export interface CenturyViewProps {
@@ -28,6 +29,15 @@ const itemStyle = css`
 
   height: 3rem;
   padding: 0.5rem;
+
+  &.current {
+    ${currentStyle};
+
+    &::after {
+      width: 2.125rem;
+      bottom: 6px;
+    }
+  }
 `;
 
 
@@ -35,7 +45,7 @@ export function CenturyView(props: CenturyViewProps) {
 
   const { year, minYear, maxYear, onSelect } = props;
 
-  const { list, prev, next } = useCentury({
+  const { currentYear, list, prev, next } = useCentury({
     size: 20,
     seedYear: year,
     maxYear, minYear
@@ -46,7 +56,7 @@ export function CenturyView(props: CenturyViewProps) {
   const listElms = list
     .map((x) => {
       return (
-        <Button class={itemStyle} variant={'minimal'}
+        <Button class={cx(itemStyle, currentYear === x && 'current')} variant={'minimal'}
           onClick={() => onSelect?.(x)}>
             {x}
         </Button>

@@ -2,7 +2,8 @@ import { css, cx } from '@emotion/css';
 
 import { Button } from '../Button';
 
-import { borderStyle, DatePickerHead, disabledStyle } from './DatePickerHead';
+import { DatePickerHead } from './DatePickerHead';
+import { borderStyle, currentStyle, disabledStyle } from './style';
 import { months, useMonth, YearMonth } from './useCalendar';
 
 
@@ -11,10 +12,13 @@ export interface MonthViewProps {
 
   min: Date;
   max: Date;
+  selected: Set<number>;
+  disabled: Set<number>;
+
   year: number;
   month: number;
   onYear: (value: YearMonth) => void;
-  onChange?: () => void;
+  onActivate?: (date: Date) => void;
 }
 
 const gridStyle = css`
@@ -23,7 +27,6 @@ const gridStyle = css`
 
   grid-gap: 4px;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(7, auto);
 `;
 
 const weekStyle = css`
@@ -38,23 +41,54 @@ const weekStyle = css`
   font-size: 0.875rem;
 `;
 
+
+// There are following possibilities for day button styling
+// 1. standard              2. today              3. selected
+// 4. standard + disabled   5. today + disabled   6. selected + disabled
+// 7. today + selected + disabled
 const dateStyle = css`
   ${weekStyle};
-  ${disabledStyle};
-
   min-height: 2rem;
 
   cursor: pointer;
   font-size: inherit;
+
+  /* Case 2: today */
+  &.today {
+    ${currentStyle};
+
+    &::after {
+      width: 1.25rem;
+    }
+  }
+
+  /* Case 3: selected */
+  &.selected {
+    color: var(--ca-primary-comp);
+    background-color: var(--ca-primary);
+    border-color: var(--ca-primary);
+  }
+
+  /* Case 4 & Case 5: standard/today + disabled */
+  &:disabled {
+    ${disabledStyle};
+
+    /* Case 6: selected + disabled */
+    &.selected {
+      color: var(--ca-primary-comp);
+      background-color: var(--ca-disabled);
+      border-color: var(--ca-disabled);
+    }
+  }
 `;
 
 
 export function MonthView(props: MonthViewProps) {
 
-  const { onYear, min, max } = props;
+  const { min, max, selected, disabled, onYear, onActivate } = props;
 
   const hook = useMonth({
-    min, max,
+    min, max, selected, disabled,
     month: props.month,
     year: props.year
   });
@@ -76,12 +110,15 @@ export function MonthView(props: MonthViewProps) {
         <div class={weekStyle}>Th</div>
         <div class={weekStyle}>Fr</div>
         <div class={weekStyle}>Sa</div>
-        {days.map((x) => (
-          <Button class={cx(dateStyle)} variant={'minimal'} disabled={x.disabled}
-            style={{ gridColumn: (x.dayOfWeek + 1)}}>
-              {x.dayOfMonth}
-          </Button>
-        ))}
+        {days.map((x) => {
+          const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected');
+          return (
+            <Button class={classes} variant={'minimal'} disabled={x.disabled}
+              onClick={() => onActivate?.(x.date)} style={{ gridColumn: (x.dayOfWeek + 1)}}>
+                {x.dayOfMonth}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );

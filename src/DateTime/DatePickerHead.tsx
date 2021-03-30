@@ -3,6 +3,8 @@ import { css, cx } from '@emotion/css';
 import { Button } from '../Button';
 import { SVGIcon } from '../icons/SVGIcon';
 
+import { borderStyle, disabledStyle } from './style';
+
 
 export interface DatePickerHeadProps {
   class?: string;
@@ -24,21 +26,6 @@ const headStyle = css`
   justify-content: space-between;
 `;
 
-export const borderStyle = css`
-  border: 1px solid transparent;
-  transition: all 120ms ease-out;
-
-  &:not([disabled]):hover {
-    border-color: var(--ca-border-hover);
-  }
-`;
-
-export const disabledStyle = css`
-  &[disabled] {
-    cursor: default;
-    color: var(--ca-disabled);
-  }
-`;
 
 const monthStyle = css`
   ${borderStyle};
@@ -63,7 +50,10 @@ const arrowStyle = css`
   height: 2.25rem;
 
   ${borderStyle};
-  ${disabledStyle};
+
+  &:disabled {
+    ${disabledStyle};
+  }
 
   &.down {
     margin-left: 0.25rem;

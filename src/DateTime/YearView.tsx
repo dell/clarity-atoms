@@ -3,7 +3,8 @@ import { Fragment } from 'preact';
 
 import { Button } from '../Button';
 
-import { borderStyle, DatePickerHead, disabledStyle } from './DatePickerHead';
+import { DatePickerHead } from './DatePickerHead';
+import { borderStyle, currentStyle, disabledStyle } from './style';
 import { MonthInfo, useYear, YearMonth } from './useCalendar';
 
 
@@ -28,9 +29,20 @@ const gridStyle = css`
 
 const itemStyle = css`
   ${borderStyle};
-  ${disabledStyle};
   height: 42px;
   padding: 0.5rem;
+
+  &.current {
+    ${currentStyle};
+
+    &::after {
+      width: 1.75rem;
+    }
+  }
+
+  &:disabled {
+    ${disabledStyle};
+  }
 `;
 
 const gapStyle = css`
@@ -42,7 +54,7 @@ export function YearView(props: YearProps) {
 
   const { onCentury, onSelect, min, max } = props;
 
-  const { years, prev, next } = useYear({ seedYear: props.year, min, max });
+  const { years, prev, next } = useYear({ seedYear: props.year, min, max, size: 2 });
 
   return (
     <div class={cx('cla-year-view', props.class)}>
@@ -79,7 +91,8 @@ function MonthList(props: MonthListProps) {
       {months
       .map((x, index) => {
         return (
-          <Button class={itemStyle} variant='minimal' disabled={x.disabled}
+          <Button class={cx(itemStyle, x.isCurrent && 'current')}
+            variant='minimal' disabled={x.disabled}
             onClick={() => onMonth(index)}>
               {x.abbr}
           </Button>

@@ -144,6 +144,7 @@ export function Calendar(props: CalendarProps) {
         {isMonthView &&
           <MonthView class={viewStyle} year={year} month={month}
             min={state.min} max={state.max}
+            selected={state.value} disabled={state.disabled}
             onYear={onMonthToYear} />}
       </div>
     </div>
