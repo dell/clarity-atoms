@@ -1,25 +1,32 @@
 import { css, cx } from '@emotion/css';
+import { Ref } from 'preact';
+import { forwardRef, useImperativeHandle } from 'preact/compat';
 
 import { Button } from '../Button';
 
 import { DatePickerHead } from './DatePickerHead';
 import { borderStyle, currentStyle, disabledStyle, focusStyle } from './style';
-import { months, useMonth, YearMonth } from './useCalendar';
+import { DayInfo, months, YearMonth } from './useCalendar';
 
 
 export interface MonthViewProps {
   class?: string;
 
-  min: Date;
-  max: Date;
-  selected: Set<number>;
-  disabled: Set<number>;
-
+  days: DayInfo[];
   year: number;
   month: number;
   range?: [Date, Date];
-  onYear: (value: YearMonth) => void;
+
+  onPrev?: (() => void) | undefined;
+  onNext?: (() => void) | undefined;
+  onYear?: (value: YearMonth) => void;
   onActivate?: (date: Date) => void;
+}
+
+export interface MonthViewRef {
+  focusDay: (day: number) => void;
+  focusPrev: () => void;
+  focusNext: () => void;
 }
 
 const gridStyle = css`
@@ -89,17 +96,17 @@ const dateStyle = css`
 `;
 
 
-export function MonthView(props: MonthViewProps) {
+export const MonthView = forwardRef(function MonthView(props: MonthViewProps, ref: Ref<MonthViewRef>) {
 
-  const { min, max, selected, disabled, range, onYear, onActivate } = props;
+  const { days, year, month, range, onYear, onActivate, onPrev, onNext } = props;
 
-  const hook = useMonth({
-    min, max, selected, disabled, range,
-    month: props.month,
-    year: props.year
-  });
-
-  const { days, year, month, prev, next } = hook;
+  useImperativeHandle(ref, () => {
+    return {
+      focusDay: (x: number) => void 0,
+      focusNext: () => void 0,
+      focusPrev: () => void 0
+    };
+  }, []);
 
   const label = months[month][1] + ' ' + year;
 
@@ -107,7 +114,7 @@ export function MonthView(props: MonthViewProps) {
   return (
     <div class={cx('cla-month-view', props.class)}>
       <DatePickerHead label={label} navigation={true}
-        onAction={() => onYear([year, month])} onPrev={prev} onNext={next} />
+        onAction={() => onYear?.([year, month])} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle}>
         <div class={weekStyle}>Su</div>
         <div class={weekStyle}>Mo</div>
@@ -118,6 +125,7 @@ export function MonthView(props: MonthViewProps) {
         <div class={weekStyle}>Sa</div>
         {days.map((x) => {
           const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected', x.inRange && 'range');
+
           return (
             <Button class={classes} variant={'minimal'} disabled={x.disabled}
               onClick={() => onActivate?.(x.date)} style={{ gridColumn: (x.dayOfWeek + 1)}}>
@@ -128,4 +136,4 @@ export function MonthView(props: MonthViewProps) {
       </div>
     </div>
   );
-}
+});

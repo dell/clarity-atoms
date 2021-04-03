@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 
 
 export type YearMonth = [number | null, number | null];
@@ -35,38 +35,82 @@ export interface UseCalendarProps {
   disabled?: Date[];
 }
 
-export function useCalendar(props: UseCalendarProps) {
+export interface UseCalendarState {
+  // Year and month selected by user
+  year: number;
+  month: number;
+  current: Date;
+  min: Date;
+  max: Date;
 
-  const { min, max, value, disabled } = props;
+  // Years to be shown at a time
+  years: number[];
+  onPrevYears?: () => void;
+  onNextYears?: () => void;
+
+  months: YearInfo[];
+  onPrevMonths?: () => void;
+  onNextMonths?: () => void;
+
+  days: DayInfo[];
+  onPrevDays?: () => void;
+  onNextDays?: () => void;
+
+  // Force new local state
+  set: (yearMonth: YearMonth) => void;
+}
 
 
-  const disabledSet = useMemo(() => new Set((disabled || []).map(dateToNumber)), [disabled]);
-  const valueSet = useMemo(() => new Set((value || []).map(dateToNumber)), [value]);
+export function useCalendar(props: UseCalendarProps): UseCalendarState {
 
-  const [current, absMin, absMax] =
-    useMemo(() => {
-      const current = new Date();
-      const minDate = new Date();
-      const maxDate = new Date();
+  const { value, disabled } = props;
 
-      minDate.setFullYear(current.getFullYear() - 70, current.getMonth(), 1);
-      minDate.setHours(0, 0, 0 ,0);
+  // Temporary transient state for internal selection
+  // Why is it required?
+  // Date selection is a three step process - year, month and then finally day.
+  // Before user selects a `day`, it can remain in a transient state by choosing only year
+  // or by choosing only till month and waiting for user to select final day.
+  const [local, setLocal] = useState<YearMonth>([null, null]);
 
-      maxDate.setFullYear(current.getFullYear() + 50, current.getMonth(), 0);
-      maxDate.setHours(0, 0, 0 ,0);
+  const [current, min, max] = useExtrema(props.min, props.max);
+  const disabledSet = useDateSet(disabled);
+  const valueSet = useDateSet(value);
 
-      return [current, minDate, maxDate];
-    }, []);
+  const year = local[0] ?? current.getFullYear();
+  const month = local[1] ?? current.getMonth();
 
-  const minDate = min ? min : absMin;
-  const maxDate = max ? max : absMax;
+  const onYear = (year: number) => setLocal([year, null]);
+
+  const cState = buildCentury(year, min, max, onYear);
+  const yState = buildYear(year, current, min, max, onYear, 2);
+  const mState = buildMonth({
+    year, month, min, max,
+    onChange: setLocal,
+    selected: valueSet,
+    disabled: disabledSet
+  });
 
   return {
+    year,
+    month,
+
     current,
-    min: minDate,
-    max: maxDate,
-    disabled: disabledSet,
-    value: valueSet
+    min,
+    max,
+
+    years: cState.years,
+    onPrevYears: cState.prev,
+    onNextYears: cState.next,
+
+    months: yState.years,
+    onPrevMonths: yState.prev,
+    onNextMonths: yState.next,
+
+    days: mState.days,
+    onPrevDays: mState.prev,
+    onNextDays: mState.next,
+
+    set: setLocal
   };
 }
 
@@ -87,15 +131,10 @@ export const months = [
   ['Oct', 'October'], ['Nov', 'November'], ['Dec', 'December']
 ];
 
-export function useCentury(props: UseCenturyProps) {
+// Here year holds the reference year around which current page's bounds are drawn.
+function buildCentury(year: number, min: Date, max: Date, changeCb: (year: number) => void, size: number = 20) {
 
-  const { seedYear, minYear, maxYear, size } = props;
-
-  // pageYear holds the reference year around which current page's bounds are drawn.
-  const [local, setLocal] = useState<null | number>(null);
-  const current = useMemo(() => new Date(), []);
-
-  const year = local ?? seedYear;
+  const minYear = min.getFullYear(), maxYear = max.getFullYear();
 
   // If size is 20, lMedian = 10 & hMedian = 9;
   // If size is 21, lMedian = 10 & hMedian = 10;
@@ -114,40 +153,23 @@ export function useCentury(props: UseCenturyProps) {
 
   const finalDiff = adjustedEndYear - startYear + 1;
 
-  // Update page year whenever input year is changed.
-  useEffect(() => setLocal(seedYear), [seedYear]);
+  const years = new Array(finalDiff).fill(0)
+    .map((_, index) => startYear + index);
 
   // There is no point in clicking previous if minYear is hit.
   const prev = (startYear > minYear)
-    ? () => setLocal(Math.max(startYear - lMedian, minYear))
+    ? () => changeCb(Math.max(startYear - lMedian, minYear))
     : undefined;
 
   const next = (adjustedEndYear < maxYear)
-    ? () => setLocal(Math.min(adjustedEndYear + size - uMedian, maxYear))
+    ? () => changeCb(Math.min(adjustedEndYear + size - uMedian, maxYear))
     : undefined;
 
-  const list = new Array(finalDiff).fill(0)
-    .map((_, index) => startYear + index)
-
-  return { list, prev, next, currentYear: current.getFullYear() };
+  return { years, prev, next };
 }
 
 
-export interface UseYearProps {
-  size?: number;
-  seedYear: number;
-  min: Date;
-  max: Date;
-}
-
-export function useYear(props: UseYearProps) {
-
-  const { min, max, size = 1 } = props;
-
-  const [local, setLocal] = useState<null | number>(null);
-  const current = useMemo(() => new Date(), []);
-
-  const year = local ?? props.seedYear;
+function buildYear(year: number, current: Date, min: Date, max: Date, changeCb: (year: number) => void, size: number = 1) {
 
   const currentYear = current.getFullYear();
   const currentMonth = current.getMonth();
@@ -160,14 +182,14 @@ export function useYear(props: UseYearProps) {
   const nextSize = Math.min(maxYear - year, size);
 
   const prev = prevSize > 0
-    ? () => setLocal(year - prevSize)
+    ? () => changeCb(year - prevSize)
     : undefined;
 
   // There is a scope in calling next only if it is a non-leaf page.
   // If nextSize is less than size, it means you are at the end of the view
   // or allowed range.
   const next = size === nextSize
-    ? () => setLocal(year + nextSize)
+    ? () => changeCb(year + nextSize)
     : undefined;
 
   const years: YearInfo[] = new Array(Math.min(nextSize + 1, size)).fill(0)
@@ -183,29 +205,28 @@ export function useYear(props: UseYearProps) {
       }))
     }));
 
-
-  return { years, prev, next };
+  return { years, prev, next }
 }
 
 
-export interface UseMonthProps {
-  min: Date;
-  max: Date;
-  selected: Set<number>;
-  disabled: Set<number>;
-  range?: [Date, Date];
+export interface BuildMonthProp {
   year: number;
   month: number;
+
+  min: Date;
+  max: Date;
+
+  selected: Set<number>;
+  disabled: Set<number>;
+
+  onChange: (yearMonth: YearMonth) => void;
+
+  range?: [Date, Date];
 }
 
-export function useMonth(props: UseMonthProps) {
+function buildMonth(props: BuildMonthProp) {
 
-  const { min, max, selected, disabled, range } = props;
-
-  const [local, setLocal] = useState<YearMonth>([null, null]);
-
-  const year = local[0] ?? props.year;
-  const month = local[1] ?? props.month;
+  const { year, month, min, max, selected, disabled, range, onChange } = props;
 
   const minYear = min.getFullYear();
   const maxYear = max.getFullYear();
@@ -216,17 +237,13 @@ export function useMonth(props: UseMonthProps) {
     buildDays(month, year, min, max, disabled || new Set(), selected || new Set(), new Date(), range),
   [month, year, min, max, selected, disabled, range]);
 
-  // Reset local selection when date changes
-  useEffect(() => setLocal([null, null]), [props.year, props.month]);
-
-
   const prev = (year <= minYear && month <= minYearMonth)
     ? undefined
     : () => {
       if (month === 0) {
-        setLocal([year - 1, 11]);
+        onChange([year - 1, 11]);
       } else {
-        setLocal([year, month - 1]);
+        onChange([year, month - 1]);
       }
     };
 
@@ -234,15 +251,15 @@ export function useMonth(props: UseMonthProps) {
     ? undefined
     : () => {
       if (month === 11) {
-        setLocal([year + 1, 0]);
+        onChange([year + 1, 0]);
       } else {
-        setLocal([year, month + 1]);
+        onChange([year, month + 1]);
       }
     };
 
-
-  return { days, year, month, prev, next };
+  return { days, prev, next };
 }
+
 
 
 function buildDays(month: number, year: number, min: Date, max: Date,
@@ -304,4 +321,31 @@ function isDateEq(d1: Date, d2: Date) {
     d1.getMonth() == d2.getMonth() &&
     d1.getFullYear() == d2.getFullYear()
   );
+}
+
+// Build Extrema = min date (minima) + max date (maxima) and also current time
+function useExtrema(min?: Date, max?: Date) {
+  const [current, absMin, absMax] =
+    useMemo(() => {
+      const current = new Date();
+      const minDate = new Date();
+      const maxDate = new Date();
+
+      minDate.setFullYear(current.getFullYear() - 70, current.getMonth(), 1);
+      minDate.setHours(0, 0, 0 ,0);
+
+      maxDate.setFullYear(current.getFullYear() + 50, current.getMonth(), 0);
+      maxDate.setHours(0, 0, 0 ,0);
+
+      return [current, minDate, maxDate];
+    }, []);
+
+  const minDate = min ? min : absMin;
+  const maxDate = max ? max : absMax;
+
+  return [current, minDate, maxDate];
+}
+
+function useDateSet(dates?: Date[]): Set<number> {
+  return useMemo(() => new Set((dates || []).map(dateToNumber)), [dates]);
 }

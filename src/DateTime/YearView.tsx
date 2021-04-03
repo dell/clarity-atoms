@@ -5,17 +5,17 @@ import { Button } from '../Button';
 
 import { DatePickerHead } from './DatePickerHead';
 import { borderStyle, currentStyle, disabledStyle } from './style';
-import { MonthInfo, useYear, YearMonth } from './useCalendar';
+import { MonthInfo, YearInfo, YearMonth } from './useCalendar';
 
 
 export interface YearProps {
   class?: string;
 
-  min: Date;
-  max: Date;
-  year: number;
+  years: YearInfo[];
   onCentury: (year: number) => void;
   onSelect: (value: YearMonth) => void;
+  onPrev?: () => void;
+  onNext?: () => void;
 }
 
 
@@ -52,9 +52,7 @@ const gapStyle = css`
 
 export function YearView(props: YearProps) {
 
-  const { onCentury, onSelect, min, max } = props;
-
-  const { years, prev, next } = useYear({ seedYear: props.year, min, max, size: 2 });
+  const { years, onCentury, onSelect, onPrev, onNext  } = props;
 
   return (
     <div class={cx('cla-year-view', props.class)}>
@@ -65,7 +63,7 @@ export function YearView(props: YearProps) {
           <Fragment>
             <DatePickerHead class={cx(index > 0 && gapStyle)} label={x.year}
               navigation={index === 0} onAction={() => onCentury(x.year)}
-              onPrev={prev} onNext={next} />
+              onPrev={onPrev} onNext={onNext} />
             <div class={gridStyle}>
               <MonthList months={x.months} onMonth={onMonthChange} />
             </div>

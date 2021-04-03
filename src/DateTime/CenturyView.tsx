@@ -4,15 +4,15 @@ import { Button } from '../Button';
 
 import { DatePickerHead } from './DatePickerHead';
 import { borderStyle, currentStyle } from './style';
-import { useCentury } from './useCalendar';
+
 
 export interface CenturyViewProps {
   class?: string;
 
-  year: number;
-  minYear: number;
-  maxYear: number;
-
+  currentYear: number;
+  years: number[];
+  onPrev?: () => void;
+  onNext?: () => void;
   onSelect?: (year: number) => void;
 }
 
@@ -43,17 +43,11 @@ const itemStyle = css`
 
 export function CenturyView(props: CenturyViewProps) {
 
-  const { year, minYear, maxYear, onSelect } = props;
+  const { currentYear, years, onNext, onPrev, onSelect } = props;
 
-  const { currentYear, list, prev, next } = useCentury({
-    size: 20,
-    seedYear: year,
-    maxYear, minYear
-  });
+  const label = `${years[0]} - ${years[years.length - 1]}`;
 
-  const label = `${list[0]} - ${list[list.length - 1]}`;
-
-  const listElms = list
+  const yearsElms = years
     .map((x) => {
       return (
         <Button class={cx(itemStyle, currentYear === x && 'current')} variant={'minimal'}
@@ -65,9 +59,9 @@ export function CenturyView(props: CenturyViewProps) {
 
   return (
     <div class={cx('cla-century-view', props.class)}>
-      <DatePickerHead label={label} navigation={true} onPrev={prev} onNext={next} />
+      <DatePickerHead label={label} navigation={true} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle}>
-        {listElms}
+        {yearsElms}
       </div>
     </div>
   );

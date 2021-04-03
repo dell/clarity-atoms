@@ -65,11 +65,6 @@ export function Calendar(props: CalendarProps) {
   const [ref, setRef] = useState<null | HTMLDivElement>(null);
   const [motion, setMotion] = useState<null | Motion>(null);
 
-  // Temporary transient state for internal selection
-  const [local, setLocal] = useState<YearMonth>([null, null]);
-
-  const year = local[0] ?? state.current.getFullYear();
-  const month = local[1] ?? state.current.getMonth();
 
   const clearMotion = () => setMotion(null);
 
@@ -97,28 +92,29 @@ export function Calendar(props: CalendarProps) {
     }
   }, [ref, motion]);
 
+
   const onMonthToYear = (value: YearMonth) => {
     setView('year');
-    setLocal(value);
+    state.set(value);
     setMotion(Motion.MonthToYear);
   };
 
   const onCentury = (year: number) => {
     setView('century');
     setMotion(Motion.YearToCentury);
-    setLocal([year, null]);
+    state.set([year, null]);
   };
 
   const onCenturyToYear = (year: number) => {
     setView('year');
     setMotion(Motion.CenturyToYear);
-    setLocal([year, null]);
+    state.set([year, null]);
   };
 
   const onMonth = (value: YearMonth) => {
     setView('month');
     setMotion(Motion.YearToMonth);
-    setLocal(value);
+    state.set(value);
   };
 
 
@@ -134,20 +130,20 @@ export function Calendar(props: CalendarProps) {
     <div ref={setRef} class={cx(rootStyle, 'cla-date-picker-renderer')}>
       <div class={perspective}>
         {isCenturyView &&
-          <CenturyView class={viewStyle}
-            minYear={state.min.getFullYear()} maxYear={state.max.getFullYear()}
-            year={year} onSelect={onCenturyToYear} />}
+          <CenturyView class={viewStyle} years={state.years}
+            currentYear={state.current.getFullYear()} onSelect={onCenturyToYear}
+            onPrev={state.onPrevYears} onNext={state.onNextYears} />}
 
         {isYearView &&
-          <YearView class={viewStyle} year={year}
-            min={state.min} max={state.max}
-            onCentury={onCentury} onSelect={onMonth} />}
+          <YearView class={viewStyle} years={state.months}
+            onCentury={onCentury} onSelect={onMonth}
+            onPrev={state.onPrevMonths} onNext={state.onNextMonths} />}
 
         {isMonthView &&
-          <MonthView class={viewStyle} year={year} month={month}
-            min={state.min} max={state.max}
-            selected={state.value} disabled={state.disabled}
-            onYear={onMonthToYear} onActivate={onActivate} />}
+          <MonthView class={viewStyle}
+            year={state.year} month={state.month} days={state.days}
+            onYear={onMonthToYear} onActivate={onActivate}
+            onPrev={state.onPrevDays} onNext={state.onNextDays} />}
       </div>
     </div>
   );
