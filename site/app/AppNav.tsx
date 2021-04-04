@@ -33,6 +33,7 @@ export function AppNav(props: AppNavProps) {
     <nav class={cx(rootStyle, props.class)}>
       <ul class={listStyle}>
         <NavItem href='/button'>Button</NavItem>
+        <NavItem href='/calendar'>Calendar</NavItem>
         <NavItem href='/checkbox'>Checkbox</NavItem>
         <NavItem href='/datepicker'>Date Picker</NavItem>
         <NavItem href='/dialog'>Dialog</NavItem>

@@ -10,6 +10,8 @@ import { YearView } from './YearView';
 
 
 export interface CalendarProps {
+  class?: string;
+
   disabled?: Date[];
   min?: Date;
   max?: Date;
@@ -93,24 +95,28 @@ export function Calendar(props: CalendarProps) {
   }, [ref, motion]);
 
 
+  // Handler for transitioning from month to year
   const onMonthToYear = (value: YearMonth) => {
     setView('year');
     state.set(value);
     setMotion(Motion.MonthToYear);
   };
 
+  // Handler for transitioning from year to century
   const onCentury = (year: number) => {
     setView('century');
     setMotion(Motion.YearToCentury);
     state.set([year, null]);
   };
 
+  // Handler for transitioning from century to year
   const onCenturyToYear = (year: number) => {
     setView('year');
     setMotion(Motion.CenturyToYear);
     state.set([year, null]);
   };
 
+  // Handler for transitioning from year to month
   const onMonth = (value: YearMonth) => {
     setView('month');
     setMotion(Motion.YearToMonth);
@@ -127,7 +133,7 @@ export function Calendar(props: CalendarProps) {
   const isMonthView = view === 'month' || motion === Motion.MonthToYear;
 
   return (
-    <div ref={setRef} class={cx(rootStyle, 'cla-date-picker-renderer')}>
+    <div ref={setRef} class={cx('cla-calendar', rootStyle, props.class)}>
       <div class={perspective}>
         {isCenturyView &&
           <CenturyView class={viewStyle} years={state.years}

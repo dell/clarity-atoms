@@ -2,6 +2,7 @@ import { css, cx } from '@emotion/css';
 import Router from 'preact-router';
 
 import ButtonDocs from '../pages/Button/Button.mdx';
+import CalendarDocs from '../pages/DateTime/Calendar.mdx';
 import DatePickerDocs from '../pages/DateTime/DatePicker.mdx';
 import DialogDocs from '../pages/Dialog/Dialog.mdx';
 import DropdownDocs from '../pages/Dropdown/Dropdown.mdx';
@@ -29,6 +30,7 @@ export function AppRouter(props: AppRouterProps) {
       <Router>
         <Home path='/' />
         <ButtonDocs path='/button' />
+        <CalendarDocs path='/calendar' />
         <CheckboxExample path='/checkbox' />
         <DatePickerDocs path='/datepicker' />
         <DialogDocs path='/dialog' />
