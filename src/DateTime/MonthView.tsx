@@ -1,8 +1,10 @@
 import { css, cx } from '@emotion/css';
 import { Ref } from 'preact';
-import { forwardRef, useImperativeHandle } from 'preact/compat';
+import { forwardRef, useEffect, useRef, useState } from 'preact/compat';
 
 import { Button } from '../Button';
+import { qs } from '../util/dom';
+import { makeKeyboardHandler } from '../util/keyboard';
 
 import { DatePickerHead } from './DatePickerHead';
 import { borderStyle, currentStyle, disabledStyle, focusStyle } from './style';
@@ -24,9 +26,7 @@ export interface MonthViewProps {
 }
 
 export interface MonthViewRef {
-  focusDay: (day: number) => void;
-  focusPrev: () => void;
-  focusNext: () => void;
+  focus: (day?: number) => void;
 }
 
 const gridStyle = css`
@@ -82,6 +82,10 @@ const dateStyle = css`
     ${focusStyle};
   }
 
+  &:focus {
+    ${focusStyle};
+  }
+
   /* Case 4 & Case 5: standard/today + disabled */
   &:disabled {
     ${disabledStyle};
@@ -95,27 +99,148 @@ const dateStyle = css`
   }
 `;
 
+type FocusToken = ['prev', number] | ['next', number];
 
-export const MonthView = forwardRef(function MonthView(props: MonthViewProps, ref: Ref<MonthViewRef>) {
+
+export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _ref: Ref<MonthViewRef>) {
 
   const { days, year, month, range, onYear, onActivate, onPrev, onNext } = props;
 
-  useImperativeHandle(ref, () => {
-    return {
-      focusDay: (x: number) => void 0,
-      focusNext: () => void 0,
-      focusPrev: () => void 0
-    };
-  }, []);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const focusRef = useRef<HTMLDivElement>(null);
+  const pendingFocus = useRef<FocusToken | null>(null);
+
+  // For locally managing the component focus
+  const [currentFocus, setCurrentFocus] = useState<null | number>(1);
+
+  const setFocus = (dayOfMonth: number) => {
+    const elm = qs(rootRef.current, `[data-day='${dayOfMonth}']`);
+
+    elm?.focus();
+    setCurrentFocus(dayOfMonth);
+  };
+
+
+  const dayOne: DayInfo | undefined = days[0];
+  const monthSize = days.length;
+
+
+  // If there was pending focus operation, then execute it.
+  useEffect(() => {
+    const toFocus = pendingFocus.current;
+
+    // Is there a focus on the magical hidden lement
+    const inInvisibleFocused = focusRef.current === document.activeElement;
+
+    if (toFocus !== null && inInvisibleFocused) {
+      const [direction, distance] = toFocus;
+
+      console.log(distance);
+
+      if (direction === 'next') {
+        setFocus(distance);
+      } else if (direction === 'prev') {
+        setFocus(monthSize - distance);
+      }
+    }
+
+    // Reset focus state
+    pendingFocus.current = null;
+
+  }, [year, month, monthSize]);
+
+
+  const onGridKeyDown = makeKeyboardHandler({
+
+    ArrowDown(e) {
+      e.preventDefault();
+
+      if (currentFocus) {
+        const next = getNextWeek(days, currentFocus);
+
+        if (next) {
+          setFocus(next.dayOfMonth);
+        } else if (onNext) {
+          onNext();
+
+          setCurrentFocus(null);
+          focusRef.current?.focus();
+          pendingFocus.current = ['next', 7 - (days.length - currentFocus)];
+        }
+      } else if (dayOne) {
+        setFocus(dayOne.dayOfMonth);
+      }
+    },
+
+    ArrowUp(e) {
+      e.preventDefault();
+
+      if (currentFocus) {
+        const prev = getPrevWeek(days, currentFocus);
+
+        if (prev) {
+          setFocus(prev.dayOfMonth);
+        } else if (onPrev) {
+          onPrev();
+
+          setCurrentFocus(null);
+          focusRef.current?.focus();
+          pendingFocus.current = ['prev', 7 - currentFocus];
+        }
+      } else if (dayOne) {
+        setFocus(dayOne.dayOfMonth);
+      }
+    },
+
+    ArrowLeft(e) {
+      e.preventDefault();
+
+      if (currentFocus) {
+        const prev = getPrev(days, currentFocus);
+
+        if (prev) {
+          setFocus(prev.dayOfMonth);
+        } else if (onPrev) {
+          onPrev();
+
+          setCurrentFocus(null);
+          focusRef.current?.focus();
+          pendingFocus.current = ['prev', 0];
+        }
+      } else if (dayOne) {
+        setFocus(dayOne.dayOfMonth);
+      }
+    },
+
+    ArrowRight(e) {
+      e.preventDefault();
+
+      if (currentFocus) {
+        const next = getNext(days, currentFocus);
+
+        if (next) {
+          setFocus(next.dayOfMonth);
+        } else if (onNext) {
+          onNext();
+
+          setCurrentFocus(null);
+          focusRef.current?.focus();
+          pendingFocus.current = ['next', 1];
+        }
+      } else if (dayOne) {
+        setFocus(dayOne.dayOfMonth);
+      }
+    }
+
+  });
 
   const label = months[month][1] + ' ' + year;
 
-
   return (
-    <div class={cx('cla-month-view', props.class)}>
+    <div class={cx('cla-month-view', props.class)} ref={rootRef}>
       <DatePickerHead label={label} navigation={true}
         onAction={() => onYear?.([year, month])} onPrev={onPrev} onNext={onNext} />
-      <div class={gridStyle}>
+      <div class={gridStyle} onKeyDown={onGridKeyDown}>
         <div class={weekStyle}>Su</div>
         <div class={weekStyle}>Mo</div>
         <div class={weekStyle}>Tu</div>
@@ -125,15 +250,47 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, re
         <div class={weekStyle}>Sa</div>
         {days.map((x) => {
           const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected', x.inRange && 'range');
+          const tabIndex = currentFocus === x.dayOfMonth ? 0 : -1;
 
           return (
-            <Button class={classes} variant={'minimal'} disabled={x.disabled}
-              onClick={() => onActivate?.(x.date)} style={{ gridColumn: (x.dayOfWeek + 1)}}>
+            <Button class={classes} variant={'minimal'} data-day={x.dayOfMonth}
+              disabled={x.disabled} tabIndex={tabIndex}
+              style={{ gridColumn: (x.dayOfWeek + 1)}}
+              onClick={() => onActivate?.(x.date)}>
                 {x.dayOfMonth}
             </Button>
           );
         })}
       </div>
+      {/* An invisible div to hack focus management */}
+      <div tabIndex={-1} ref={focusRef}></div>
     </div>
   );
 });
+
+
+function getNext(days: DayInfo[], currentDay: number) {
+  const current = days.findIndex((x) => x.dayOfMonth === currentDay);
+  const slice = days.slice(current + 1);
+
+  return slice.find((x) => !x.disabled);
+}
+
+function getPrev(days: DayInfo[], currentDay: number) {
+  const current = days.findIndex((x) => x.dayOfMonth === currentDay);
+  const slice = days.slice(0, current);
+
+  return slice.reverse().find((x) => !x.disabled);
+}
+
+function getNextWeek(days: DayInfo[], currentDay: number) {
+  const nextWeekDay = currentDay + 7;
+
+  return days.find((x) => x.dayOfMonth === nextWeekDay);
+}
+
+function getPrevWeek(days: DayInfo[], currentDay: number) {
+  const prevWeekDay = currentDay - 7;
+
+  return days.find((x) => x.dayOfMonth === prevWeekDay);
+}

@@ -67,7 +67,6 @@ export function Calendar(props: CalendarProps) {
   const [ref, setRef] = useState<null | HTMLDivElement>(null);
   const [motion, setMotion] = useState<null | Motion>(null);
 
-
   const clearMotion = () => setMotion(null);
 
   useLayoutEffect(() => {
