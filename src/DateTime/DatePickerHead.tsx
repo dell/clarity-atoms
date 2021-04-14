@@ -1,7 +1,10 @@
 import { css, cx } from '@emotion/css';
+import { useState } from 'preact/hooks';
 
 import { Button } from '../Button';
 import { SVGIcon } from '../icons/SVGIcon';
+import { qs } from '../util/dom';
+import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
 import { borderStyle, disabledStyle } from './style';
 
@@ -78,24 +81,79 @@ export function DatePickerHead(props: DatePickerHeadProps) {
 
   const { label, onAction, navigation, onPrev, onNext } = props;
 
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+
+  const rover = useRovingIndex(['year', 'prev', 'next'], rootRef!);
+
+  const onKeyDown = makeKeyboardHandler({
+    ArrowLeft(e) {
+      e.preventDefault();
+
+      rover.prev();
+    },
+
+    ArrowRight(e) {
+      e.preventDefault();
+
+      rover.next();
+    },
+
+    ArrowUp: prevent(() => void 0),
+    ArrowDown: prevent(() => void 0)
+  });
+
+
   return (
-    <div class={cx(headStyle, props.class)}>
-      <Button class={monthStyle} variant='minimal' disabled={!onAction}
-        onClick={onAction}>
+    <div class={cx(headStyle, props.class)} onKeyDown={onKeyDown} ref={setRootRef}>
+      <Button {...rover.prop('year')} class={monthStyle} variant='minimal'
+        disabled={!onAction} onClick={onAction}>
           <span>{label}</span>
           {onAction && <SVGIcon class={'chev'} name='chevThick' />}
       </Button>
       {navigation && (
         <div>
-          <Button class={cx(arrowStyle, 'up')} variant='minimal' disabled={!onPrev}
-            onClick={onPrev}>
+          <Button {...rover.prop('prev')} class={cx(arrowStyle, 'up')} variant='minimal'
+            disabled={!onPrev} onClick={onPrev}>
               <SVGIcon name='chevThick' />
           </Button>
-          <Button class={cx(arrowStyle, 'down')} variant='minimal' disabled={!onNext}
-            onClick={onNext}>
+          <Button {...rover.prop('next')} class={cx(arrowStyle, 'down')} variant='minimal'
+            disabled={!onNext} onClick={onNext}>
               <SVGIcon name='chevThick' />
           </Button>
         </div>)}
     </div>
   );
+}
+
+// TODO: Can this be generalized?
+// Also, find out if you can trust the DOM.
+function useRovingIndex<T extends string>(sequence: T[], scope: HTMLElement) {
+
+  const [current, setCurrent] = useState(0);
+
+  return {
+    next() {
+      const newVal = current === sequence.length - 1 ? 0 : current + 1;
+      const elm = qs(scope, `[data-roving='${sequence[newVal]}']`);
+
+      setCurrent(newVal);
+      elm?.focus();
+    },
+
+    prev() {
+      const newVal = current === 0 ? sequence.length - 1 : current - 1;
+      const elm = qs(scope, `[data-roving='${sequence[newVal]}']`);
+
+      setCurrent(newVal);
+      elm?.focus();
+    },
+
+    prop(x: T) {
+      return {
+        tabIndex: sequence[current] === x  ? 0 : -1,
+        'data-roving': x
+      };
+    }
+  };
+
 }

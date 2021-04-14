@@ -8,6 +8,7 @@ export interface KeyboardHandlerProps {
   ArrowLeft?: (e: KeyboardEvent) => void;
   ArrowRight?: (e: KeyboardEvent) => void;
   Escape?: (e: KeyboardEvent) => void;
+  CatchAll?: (e: KeyboardEvent) => void;
 }
 
 
@@ -17,7 +18,11 @@ export function makeKeyboardHandler(props: KeyboardHandlerProps) {
     const key = e.key as any;
     const handler = (props as any)[key];
 
-    handler?.(e);
+    if (handler) {
+      handler(e);
+    } else if (props.CatchAll) {
+      props.CatchAll(e);
+    }
   };
 }
 

@@ -99,7 +99,7 @@ const dateStyle = css`
   }
 `;
 
-type FocusToken = ['prev', number] | ['next', number];
+type FocusToken = ['prev' | 'next', number];
 
 
 export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _ref: Ref<MonthViewRef>) {
@@ -116,8 +116,8 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
   const setFocus = (dayOfMonth: number) => {
     const elm = qs(rootRef.current, `[data-day='${dayOfMonth}']`);
 
-    elm?.focus();
     setCurrentFocus(dayOfMonth);
+    elm?.focus();
   };
 
 
@@ -125,7 +125,7 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
   const monthSize = days.length;
 
 
-  // If there was pending focus operation, then execute it.
+  // If there was pending focus operation, then attempt to execute it.
   useEffect(() => {
     const toFocus = pendingFocus.current;
 
@@ -134,8 +134,6 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
 
     if (toFocus !== null && inInvisibleFocused) {
       const [direction, distance] = toFocus;
-
-      console.log(distance);
 
       if (direction === 'next') {
         setFocus(distance);
