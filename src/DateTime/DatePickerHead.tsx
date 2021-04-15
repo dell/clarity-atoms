@@ -3,10 +3,10 @@ import { useState } from 'preact/hooks';
 
 import { Button } from '../Button';
 import { SVGIcon } from '../icons/SVGIcon';
-import { qs } from '../util/dom';
 import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
 import { borderStyle, disabledStyle } from './style';
+import { useRovingIndex } from './useRoving';
 
 
 export interface DatePickerHeadProps {
@@ -83,7 +83,7 @@ export function DatePickerHead(props: DatePickerHeadProps) {
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
 
-  const rover = useRovingIndex(['year', 'prev', 'next'], rootRef!);
+  const rover = useRovingIndex(['year', 'prev', 'next'], { scope: rootRef!, wrapAround: true });
 
   const onKeyDown = makeKeyboardHandler({
     ArrowLeft(e) {
@@ -123,37 +123,4 @@ export function DatePickerHead(props: DatePickerHeadProps) {
         </div>)}
     </div>
   );
-}
-
-// TODO: Can this be generalized?
-// Also, find out if you can trust the DOM.
-function useRovingIndex<T extends string>(sequence: T[], scope: HTMLElement) {
-
-  const [current, setCurrent] = useState(0);
-
-  return {
-    next() {
-      const newVal = current === sequence.length - 1 ? 0 : current + 1;
-      const elm = qs(scope, `[data-roving='${sequence[newVal]}']`);
-
-      setCurrent(newVal);
-      elm?.focus();
-    },
-
-    prev() {
-      const newVal = current === 0 ? sequence.length - 1 : current - 1;
-      const elm = qs(scope, `[data-roving='${sequence[newVal]}']`);
-
-      setCurrent(newVal);
-      elm?.focus();
-    },
-
-    prop(x: T) {
-      return {
-        tabIndex: sequence[current] === x  ? 0 : -1,
-        'data-roving': x
-      };
-    }
-  };
-
 }

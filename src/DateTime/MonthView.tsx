@@ -3,12 +3,12 @@ import { Ref } from 'preact';
 import { forwardRef, useEffect, useRef, useState } from 'preact/compat';
 
 import { Button } from '../Button';
-import { qs } from '../util/dom';
-import { makeKeyboardHandler } from '../util/keyboard';
+import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
 import { DatePickerHead } from './DatePickerHead';
 import { borderStyle, currentStyle, disabledStyle, focusStyle } from './style';
 import { DayInfo, months, YearMonth } from './useCalendar';
+import { useRovingIndex } from './useRoving';
 
 
 export interface MonthViewProps {
@@ -106,24 +106,17 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
 
   const { days, year, month, range, onYear, onActivate, onPrev, onNext } = props;
 
-  const rootRef = useRef<HTMLDivElement>(null);
+  const [gridRef, setGridRef] = useState<HTMLDivElement | null>(null);
   const focusRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<FocusToken | null>(null);
 
-  // For locally managing the component focus
-  const [currentFocus, setCurrentFocus] = useState<null | number>(1);
+  // Month grid has 7 columns.
+  const rover = useRovingIndex(days.map((x) => x.dayOfMonth), {
+    scope: gridRef!,
+    gridSize: 7
+  });
 
-  const setFocus = (dayOfMonth: number) => {
-    const elm = qs(rootRef.current, `[data-day='${dayOfMonth}']`);
-
-    setCurrentFocus(dayOfMonth);
-    elm?.focus();
-  };
-
-
-  const dayOne: DayInfo | undefined = days[0];
   const monthSize = days.length;
-
 
   // If there was pending focus operation, then attempt to execute it.
   useEffect(() => {
@@ -136,109 +129,50 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
       const [direction, distance] = toFocus;
 
       if (direction === 'next') {
-        setFocus(distance);
+        rover.setValue(distance);
       } else if (direction === 'prev') {
-        setFocus(monthSize - distance);
+        rover.setValue(monthSize - distance);
       }
     }
 
     // Reset focus state
     pendingFocus.current = null;
 
-  }, [year, month, monthSize]);
+  }, [year, month, monthSize, gridRef]);
 
+
+  // adjustFocus will help shift focus by +-1 day or +-1 week.
+  // nextCall should focus to next/previous item. If it is at a boundary, then
+  // it should return fail. If next focus has failed, faillCallback
+  // will be called to informing the parent.
+  const adjustFocus = (nextCall: () => boolean, failCallback?: () => void, token?: FocusToken) => {
+    const isNextOkay = nextCall();
+
+    if (!isNextOkay && failCallback) {
+      failCallback();
+
+      // Initiate a transaction request for focus
+      // It is valid and executed after the caller component
+      // has supplied values for next month rendering
+      focusRef.current?.focus();
+      pendingFocus.current = token ?? null;
+    }
+  };
 
   const onGridKeyDown = makeKeyboardHandler({
-
-    ArrowDown(e) {
-      e.preventDefault();
-
-      if (currentFocus) {
-        const next = getNextWeek(days, currentFocus);
-
-        if (next) {
-          setFocus(next.dayOfMonth);
-        } else if (onNext) {
-          onNext();
-
-          setCurrentFocus(null);
-          focusRef.current?.focus();
-          pendingFocus.current = ['next', 7 - (days.length - currentFocus)];
-        }
-      } else if (dayOne) {
-        setFocus(dayOne.dayOfMonth);
-      }
-    },
-
-    ArrowUp(e) {
-      e.preventDefault();
-
-      if (currentFocus) {
-        const prev = getPrevWeek(days, currentFocus);
-
-        if (prev) {
-          setFocus(prev.dayOfMonth);
-        } else if (onPrev) {
-          onPrev();
-
-          setCurrentFocus(null);
-          focusRef.current?.focus();
-          pendingFocus.current = ['prev', 7 - currentFocus];
-        }
-      } else if (dayOne) {
-        setFocus(dayOne.dayOfMonth);
-      }
-    },
-
-    ArrowLeft(e) {
-      e.preventDefault();
-
-      if (currentFocus) {
-        const prev = getPrev(days, currentFocus);
-
-        if (prev) {
-          setFocus(prev.dayOfMonth);
-        } else if (onPrev) {
-          onPrev();
-
-          setCurrentFocus(null);
-          focusRef.current?.focus();
-          pendingFocus.current = ['prev', 0];
-        }
-      } else if (dayOne) {
-        setFocus(dayOne.dayOfMonth);
-      }
-    },
-
-    ArrowRight(e) {
-      e.preventDefault();
-
-      if (currentFocus) {
-        const next = getNext(days, currentFocus);
-
-        if (next) {
-          setFocus(next.dayOfMonth);
-        } else if (onNext) {
-          onNext();
-
-          setCurrentFocus(null);
-          focusRef.current?.focus();
-          pendingFocus.current = ['next', 1];
-        }
-      } else if (dayOne) {
-        setFocus(dayOne.dayOfMonth);
-      }
-    }
-
+    ArrowUp: prevent(() => adjustFocus(rover.prevRow, onPrev, ['prev', 7 - rover.active])),
+    ArrowDown: prevent(() => adjustFocus(rover.nextRow, onNext, ['next', rover.active + 7 - monthSize])),
+    ArrowLeft: prevent(() => adjustFocus(rover.prev, onPrev, ['prev', 0])),
+    ArrowRight: prevent(() => adjustFocus(rover.next, onNext, ['next', 1])),
   });
 
   const label = months[month][1] + ' ' + year;
 
   return (
-    <div class={cx('cla-month-view', props.class)} ref={rootRef}>
+    <div class={cx('cla-month-view', props.class)}>
       <DatePickerHead label={label} navigation={true}
         onAction={() => onYear?.([year, month])} onPrev={onPrev} onNext={onNext} />
-      <div class={gridStyle} onKeyDown={onGridKeyDown}>
+      <div class={gridStyle} ref={setGridRef} onKeyDown={onGridKeyDown}>
         <div class={weekStyle}>Su</div>
         <div class={weekStyle}>Mo</div>
         <div class={weekStyle}>Tu</div>
@@ -248,11 +182,10 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
         <div class={weekStyle}>Sa</div>
         {days.map((x) => {
           const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected', x.inRange && 'range');
-          const tabIndex = currentFocus === x.dayOfMonth ? 0 : -1;
 
           return (
-            <Button class={classes} variant={'minimal'} data-day={x.dayOfMonth}
-              disabled={x.disabled} tabIndex={tabIndex}
+            <Button {...rover.prop(x.dayOfMonth)} class={classes}
+              variant={'minimal'} disabled={x.disabled}
               style={{ gridColumn: (x.dayOfWeek + 1)}}
               onClick={() => onActivate?.(x.date)}>
                 {x.dayOfMonth}
@@ -265,30 +198,3 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
     </div>
   );
 });
-
-
-function getNext(days: DayInfo[], currentDay: number) {
-  const current = days.findIndex((x) => x.dayOfMonth === currentDay);
-  const slice = days.slice(current + 1);
-
-  return slice.find((x) => !x.disabled);
-}
-
-function getPrev(days: DayInfo[], currentDay: number) {
-  const current = days.findIndex((x) => x.dayOfMonth === currentDay);
-  const slice = days.slice(0, current);
-
-  return slice.reverse().find((x) => !x.disabled);
-}
-
-function getNextWeek(days: DayInfo[], currentDay: number) {
-  const nextWeekDay = currentDay + 7;
-
-  return days.find((x) => x.dayOfMonth === nextWeekDay);
-}
-
-function getPrevWeek(days: DayInfo[], currentDay: number) {
-  const prevWeekDay = currentDay - 7;
-
-  return days.find((x) => x.dayOfMonth === prevWeekDay);
-}
