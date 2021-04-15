@@ -35,7 +35,7 @@ export function useRovingIndex<T extends (string | number)>(sequence: T[], optio
   return {
     active: sequence[current],
     sequence,
-    current,
+    index: current,
 
     next() {
       const newVal =

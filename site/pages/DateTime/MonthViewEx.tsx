@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { useMemo, useRef, useState } from 'preact/hooks';
 
 import { MonthView } from 'clarity-atoms/DateTime/MonthView';
-import { useMonth, YearMonth } from 'clarity-atoms/DateTime/useCalendar';
+import { useMonth } from 'clarity-atoms/DateTime/useCalendar';
 
 
 const rootStyle = css`

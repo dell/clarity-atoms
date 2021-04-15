@@ -128,6 +128,9 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
     if (toFocus !== null && inInvisibleFocused) {
       const [direction, distance] = toFocus;
 
+      // Note: rover need not be added as an dependency.
+      // You can cheat hooks is some rare occasions.
+      // This is one such occasion.
       if (direction === 'next') {
         rover.setValue(distance);
       } else if (direction === 'prev') {
@@ -138,7 +141,7 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
     // Reset focus state
     pendingFocus.current = null;
 
-  }, [year, month, monthSize, gridRef]);
+  }, [year, month, monthSize]);
 
 
   // adjustFocus will help shift focus by +-1 day or +-1 week.
