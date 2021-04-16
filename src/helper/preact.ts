@@ -1,4 +1,5 @@
 import { Ref } from 'preact';
+import { useLayoutEffect, useRef } from 'preact/hooks';
 
 /**
  * Normalizes setting of reference value.
@@ -13,4 +14,16 @@ export function setRef<T>(ref: Ref<T> | undefined, value: T) {
       ref.current = value;
     }
   }
+}
+
+
+export function useLatestRef<T>(value: T) {
+
+  const ref = useRef(value);
+
+  useLayoutEffect(() => {
+    ref.current = value;
+  });
+
+  return ref;
 }

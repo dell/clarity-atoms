@@ -109,7 +109,7 @@ export function YearView(props: YearProps) {
     if (!isNextOkay && failCallback) {
       failCallback();
 
-      // Initiate a transaction request for focus
+      // Initiate a transaction request for focus.
       // It is valid and executed after the caller component
       // has supplied values for next month rendering
       focusRef.current?.focus();
@@ -124,7 +124,7 @@ export function YearView(props: YearProps) {
       adjustFocus(rover.nextRow, onNext, ['next', rover.index + 6 - gridItems.length])),
 
     ArrowLeft: prevent(() => adjustFocus(rover.prev, onPrev, ['prev', 0])),
-    ArrowRight: prevent(() => adjustFocus(rover.next, onNext, ['next', 1])),
+    ArrowRight: prevent(() => adjustFocus(rover.next, onNext, ['next', 1]))
   });
 
   return (

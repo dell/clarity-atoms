@@ -154,7 +154,7 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
     if (!isNextOkay && failCallback) {
       failCallback();
 
-      // Initiate a transaction request for focus
+      // Initiate a transaction request for focus.
       // It is valid and executed after the caller component
       // has supplied values for next month rendering
       focusRef.current?.focus();
@@ -166,7 +166,7 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
     ArrowUp: prevent(() => adjustFocus(rover.prevRow, onPrev, ['prev', 7 - rover.active])),
     ArrowDown: prevent(() => adjustFocus(rover.nextRow, onNext, ['next', rover.active + 7 - monthSize])),
     ArrowLeft: prevent(() => adjustFocus(rover.prev, onPrev, ['prev', 0])),
-    ArrowRight: prevent(() => adjustFocus(rover.next, onNext, ['next', 1])),
+    ArrowRight: prevent(() => adjustFocus(rover.next, onNext, ['next', 1]))
   });
 
   const label = months[month][1] + ' ' + year;
