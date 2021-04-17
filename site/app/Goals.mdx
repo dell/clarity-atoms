@@ -1,0 +1,29 @@
+# Goals
+
+The main goal of the library is to provide set of primitives that allows its users to build **reasonabley** customized and sophisticated design systems.
+The library doesn't provide too low-level abstractions where the user has to go beyond components and pierce into DOM to the point that it would be questionable to use library in first place.
+At the same time, it is also not too-high level where the scope of customization is limited where everything looks like a Bootstrap Website.
+The core idea is **customization** and as such, each design system should feel unique in its own space.
+
+To achieve this, the library is built around few key principles:
+- **Composition** is everything
+- Clear distinction between different levels of abstractions
+- Readable code for each and every one of us
+
+
+### Composition
+Composition is everything. Do not assume anything about the environment on how component will be used by the user.
+Provide components that are open by principle and allow composition in different possible ways with a clearly-defined responsibility and interface.
+User may choose to compose low-level components in different ways than the library has composed. So, library should not make any magical/undocumented feature that will never be available to users.
+
+
+### Level of abstractions
+Library provides two types of abstractions - Re-usable algorithms using hooks + functions and UI components that can be used with custom logic.
+At prototyping level, library users would often use library as a complete package. But as it grows into a serious product, it is expected that users will pick various abstractions.
+The goal of the library to provide extensive guides and enough loose coupling to use these internal abstractions independently.
+
+This goes back to the main goal of composistion where it should be possible for users to compose these independent abstrations easily in a meaningful manner.
+
+
+### Readable code
+It goes without saying - Readable code is the ultimate dream of every engineering team!

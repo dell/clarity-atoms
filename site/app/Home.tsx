@@ -4,6 +4,8 @@ import { RoutableProps } from 'preact-router';
 import { HomeImage } from '../components/HomeImage';
 import { ClarityAtomsLogo } from '../components/Logo';
 
+import Goals from './Goals.mdx';
+import Roadmap from './Roadmap.mdx';
 
 export interface HomeProps extends RoutableProps {}
 
@@ -55,6 +57,15 @@ const titleStyle = css`
   margin-top: 0rem;
 `;
 
+const sectionStyle = css`
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    margin-top: 2rem;
+  }
+`;
 
 export function Home(_props: HomeProps) {
   return (
@@ -62,7 +73,12 @@ export function Home(_props: HomeProps) {
       <HomeImage class={homeImageStyle} />
       <ClarityAtomsLogo class={homeLogoStyle} />
       <h1 class={titleStyle}>Clarity Atoms</h1>
-
+      <section class={sectionStyle}>
+        <Goals />
+      </section>
+      <section class={sectionStyle}>
+        <Roadmap />
+      </section>
       <a href='https://www.freepik.com/vectors/background' target='_blank'>
         Background vector on this page is created by freepik - www.freepik.com
       </a>
