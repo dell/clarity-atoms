@@ -3,10 +3,10 @@ import { animate, easeOut } from 'popmotion';
 import { useLayoutEffect, useState } from 'preact/hooks';
 import styler from 'stylefire';
 
-import { CenturyView } from './CenturyView';
-import { MonthView } from './MonthView';
+import { YearPicker } from './YearPicker';
+import { DayPicker } from './DayPicker';
 import { useCalendar, YearMonth } from './useCalendar';
-import { YearView } from './YearView';
+import { MonthPicker } from './MonthPicker';
 
 
 export interface CalendarProps {
@@ -46,15 +46,15 @@ const viewStyle = css`
 
 
 enum Motion {
+  DayToMonth,
   MonthToYear,
-  YearToCentury,
-  CenturyToYear,
-  YearToMonth
+  YearToMonth,
+  MonthToDay
 }
 
-const monthView = '.cla-month-view';
-const yearView = '.cla-year-view';
-const centuryView = '.cla-century-view';
+const dayPicker = '.cla-day-picker';
+const monthPicker = '.cla-month-picker';
+const yearPicker = '.cla-year-picker';
 
 
 export function Calendar(props: CalendarProps) {
@@ -63,92 +63,91 @@ export function Calendar(props: CalendarProps) {
 
   const state = useCalendar({ value, min, max, disabled });
 
-  const [view, setView] = useState<'month' | 'year' | 'century'>('month');
+  const [view, setView] = useState<'day' | 'month' | 'year'>('day');
   const [ref, setRef] = useState<null | HTMLDivElement>(null);
   const [motion, setMotion] = useState<null | Motion>(null);
-
 
   const clearMotion = () => setMotion(null);
 
   useLayoutEffect(() => {
-    if (ref && motion === Motion.MonthToYear) {
+    if (ref && motion === Motion.DayToMonth) {
       return scaleInScaleOut(
-        ref.querySelector(yearView)!,
-        ref.querySelector(monthView)!,
+        ref.querySelector(monthPicker)!,
+        ref.querySelector(dayPicker)!,
         clearMotion);
-    } else if (ref && motion === Motion.YearToCentury) {
+    } else if (ref && motion === Motion.MonthToYear) {
       return scaleInScaleOut(
-        ref.querySelector(centuryView)!,
-        ref.querySelector(yearView)!,
-        clearMotion);
-    } else if (ref && motion === Motion.CenturyToYear) {
-      return scaleOutScaleIn(
-        ref.querySelector(yearView)!,
-        ref.querySelector(centuryView)!,
+        ref.querySelector(yearPicker)!,
+        ref.querySelector(monthPicker)!,
         clearMotion);
     } else if (ref && motion === Motion.YearToMonth) {
       return scaleOutScaleIn(
-        ref.querySelector(monthView)!,
-        ref.querySelector(yearView)!,
+        ref.querySelector(monthPicker)!,
+        ref.querySelector(yearPicker)!,
+        clearMotion);
+    } else if (ref && motion === Motion.MonthToDay) {
+      return scaleOutScaleIn(
+        ref.querySelector(dayPicker)!,
+        ref.querySelector(monthPicker)!,
         clearMotion);
     }
   }, [ref, motion]);
 
 
-  // Handler for transitioning from month to year
-  const onMonthToYear = (value: YearMonth) => {
-    setView('year');
+  // Handler for transitioning from days to months
+  const onDayToMonthPicker = (value: YearMonth) => {
+    setView('month');
     state.set(value);
-    setMotion(Motion.MonthToYear);
+    setMotion(Motion.DayToMonth);
   };
 
-  // Handler for transitioning from year to century
-  const onCentury = (year: number) => {
-    setView('century');
-    setMotion(Motion.YearToCentury);
-    state.set([year, null]);
-  };
-
-  // Handler for transitioning from century to year
-  const onCenturyToYear = (year: number) => {
+  // Handler for transitioning from month to years
+  const onYearPicker = (year: number) => {
     setView('year');
-    setMotion(Motion.CenturyToYear);
+    setMotion(Motion.MonthToYear);
     state.set([year, null]);
   };
 
-  // Handler for transitioning from year to month
-  const onMonth = (value: YearMonth) => {
+  // Handler for transitioning from years to months
+  const onYearToMonthPicker = (year: number) => {
     setView('month');
     setMotion(Motion.YearToMonth);
+    state.set([year, null]);
+  };
+
+  // Handler for transitioning from months to days
+  const onDayPicker = (value: YearMonth) => {
+    setView('day');
+    setMotion(Motion.MonthToDay);
     state.set(value);
   };
 
 
-  const isCenturyView = view === 'century' || motion === Motion.CenturyToYear;
+  const isYearPicker = view === 'year' || motion === Motion.YearToMonth;
 
-  const isYearView = view === 'year'
-    || motion === Motion.YearToCentury
-    || motion === Motion.YearToMonth;
+  const isMonthPicker = view === 'month'
+    || motion === Motion.MonthToYear
+    || motion === Motion.MonthToDay;
 
-  const isMonthView = view === 'month' || motion === Motion.MonthToYear;
+  const isDayPicker = view === 'day' || motion === Motion.DayToMonth;
 
   return (
     <div ref={setRef} class={cx('cla-calendar', rootStyle, props.class)}>
       <div class={perspective}>
-        {isCenturyView &&
-          <CenturyView class={viewStyle} years={state.years}
-            currentYear={state.current.getFullYear()} onSelect={onCenturyToYear}
+        {isYearPicker &&
+          <YearPicker class={viewStyle} years={state.years}
+            currentYear={state.current.getFullYear()} onSelect={onYearToMonthPicker}
             onPrev={state.onPrevYears} onNext={state.onNextYears} />}
 
-        {isYearView &&
-          <YearView class={viewStyle} years={state.months}
-            onCentury={onCentury} onSelect={onMonth}
+        {isMonthPicker &&
+          <MonthPicker class={viewStyle} years={state.months}
+            onYear={onYearPicker} onSelect={onDayPicker}
             onPrev={state.onPrevMonths} onNext={state.onNextMonths} />}
 
-        {isMonthView &&
-          <MonthView class={viewStyle}
+        {isDayPicker &&
+          <DayPicker class={viewStyle}
             year={state.year} month={state.month} days={state.days}
-            onYear={onMonthToYear} onActivate={onActivate}
+            onYear={onDayToMonthPicker} onActivate={onActivate}
             onPrev={state.onPrevDays} onNext={state.onNextDays} />}
       </div>
     </div>
@@ -182,6 +181,7 @@ function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void
     exit.stop();
   };
 }
+
 
 function scaleOutScaleIn(scaleIn: Element, scaleOut: Element, onDone: () => void) {
   const scaleInElm = styler(scaleIn);

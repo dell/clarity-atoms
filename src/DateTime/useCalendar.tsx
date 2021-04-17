@@ -81,9 +81,9 @@ export function useCalendar(props: UseCalendarProps): UseCalendarState {
 
   const onYear = (year: number) => setLocal([year, null]);
 
-  const cState = buildCentury(year, min, max, onYear);
-  const yState = buildYear(year, current, min, max, onYear, 2);
-  const mState = buildMonth({
+  const cState = buildYears(year, min, max, onYear);
+  const yState = buildMonths(year, current, min, max, onYear, 2);
+  const mState = useDays({
     year, month, min, max,
     onChange: setLocal,
     selected: valueSet,
@@ -115,15 +115,6 @@ export function useCalendar(props: UseCalendarProps): UseCalendarState {
 }
 
 
-export interface UseCenturyProps {
-  size: number;
-
-  seedYear: number;
-  minYear: number;
-  maxYear: number;
-}
-
-
 export const months = [
   ['Jan', 'January'], ['Feb', 'February'], ['Mar', 'March'],
   ['Apr', 'April'], ['May', 'May'], ['Jun', 'June'],
@@ -132,7 +123,7 @@ export const months = [
 ];
 
 // Here year holds the reference year around which current page's bounds are drawn.
-function buildCentury(year: number, min: Date, max: Date, changeCb: (year: number) => void, size: number = 20) {
+function buildYears(year: number, min: Date, max: Date, changeCb: (year: number) => void, size: number = 20) {
 
   const minYear = min.getFullYear(), maxYear = max.getFullYear();
 
@@ -169,7 +160,7 @@ function buildCentury(year: number, min: Date, max: Date, changeCb: (year: numbe
 }
 
 
-function buildYear(year: number, current: Date, min: Date, max: Date, changeCb: (year: number) => void, size: number = 1) {
+function buildMonths(year: number, current: Date, min: Date, max: Date, changeCb: (year: number) => void, size: number = 1) {
 
   const currentYear = current.getFullYear();
   const currentMonth = current.getMonth();
@@ -224,7 +215,7 @@ export interface BuildMonthProp {
   range?: [Date, Date];
 }
 
-function buildMonth(props: BuildMonthProp) {
+export function useDays(props: BuildMonthProp) {
 
   const { year, month, min, max, selected, disabled, range, onChange } = props;
 
@@ -262,7 +253,7 @@ function buildMonth(props: BuildMonthProp) {
 
 
 
-function buildDays(month: number, year: number, min: Date, max: Date,
+export function buildDays(month: number, year: number, min: Date, max: Date,
   disabled: Set<number>, value: Set<number>, current: Date, range?: [Date, Date]): DayInfo[] {
     // Start of the Month
     const firstDay = new Date(year, month).getDay();

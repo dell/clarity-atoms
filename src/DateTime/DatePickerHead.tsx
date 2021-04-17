@@ -1,9 +1,12 @@
 import { css, cx } from '@emotion/css';
+import { useState } from 'preact/hooks';
 
 import { Button } from '../Button';
 import { SVGIcon } from '../icons/SVGIcon';
+import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
 import { borderStyle, disabledStyle } from './style';
+import { useRovingIndex } from './useRoving';
 
 
 export interface DatePickerHeadProps {
@@ -40,6 +43,10 @@ const monthStyle = css`
     transform: rotateX(180deg);
   }
 
+  &:focus {
+    background: var(--ca-button-focus);
+  }
+
   &[disabled] {
     cursor: default;
   }
@@ -50,6 +57,10 @@ const arrowStyle = css`
   height: 2.25rem;
 
   ${borderStyle};
+
+  &:focus {
+    background: var(--ca-button-focus);
+  }
 
   &:disabled {
     ${disabledStyle};
@@ -70,21 +81,43 @@ export function DatePickerHead(props: DatePickerHeadProps) {
 
   const { label, onAction, navigation, onPrev, onNext } = props;
 
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+
+  const rover = useRovingIndex(
+    ['year', 'prev', 'next'],
+    { scope: rootRef!, wrapAround: true });
+
+  const onKeyDown = makeKeyboardHandler({
+    ArrowLeft(e) {
+      e.preventDefault();
+      rover.prev();
+    },
+
+    ArrowRight(e) {
+      e.preventDefault();
+      rover.next();
+    },
+
+    ArrowUp: prevent(() => void 0),
+    ArrowDown: prevent(() => void 0)
+  });
+
+
   return (
-    <div class={cx(headStyle, props.class)}>
-      <Button class={monthStyle} variant='minimal' disabled={!onAction}
-        onClick={onAction}>
+    <div class={cx(headStyle, props.class)} onKeyDown={onKeyDown} ref={setRootRef}>
+      <Button {...rover.prop('year')} class={monthStyle} variant='minimal'
+        disabled={!onAction} onClick={onAction}>
           <span>{label}</span>
           {onAction && <SVGIcon class={'chev'} name='chevThick' />}
       </Button>
       {navigation && (
         <div>
-          <Button class={cx(arrowStyle, 'up')} variant='minimal' disabled={!onPrev}
-            onClick={onPrev}>
+          <Button {...rover.prop('prev')} class={cx(arrowStyle, 'up')} variant='minimal'
+            disabled={!onPrev} onClick={onPrev}>
               <SVGIcon name='chevThick' />
           </Button>
-          <Button class={cx(arrowStyle, 'down')} variant='minimal' disabled={!onNext}
-            onClick={onNext}>
+          <Button {...rover.prop('next')} class={cx(arrowStyle, 'down')} variant='minimal'
+            disabled={!onNext} onClick={onNext}>
               <SVGIcon name='chevThick' />
           </Button>
         </div>)}
