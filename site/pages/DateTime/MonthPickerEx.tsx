@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { useMemo, useState } from 'preact/hooks';
 
-import { YearView } from 'clarity-atoms/DateTime/YearView';
+import { MonthPicker } from 'clarity-atoms/DateTime/MonthPicker';
 import { months, YearInfo } from 'clarity-atoms/DateTime/useCalendar';
 
 
@@ -15,7 +15,7 @@ const style = css`
 `;
 
 
-export default function YearViewEx() {
+export default function MonthPickerEx() {
 
   const current = useMemo(() => new Date(), []);
 
@@ -56,8 +56,8 @@ export default function YearViewEx() {
 
   return (
     <div class={rootStyle}>
-      <YearView class={style} years={years}
-        onCentury={noop} onSelect={noop}
+      <MonthPicker class={style} years={years}
+        onYear={noop} onSelect={noop}
         onPrev={onPrev} onNext={onNext} />
     </div>
   );

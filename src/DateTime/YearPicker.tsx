@@ -10,7 +10,7 @@ import { borderStyle, currentStyle, focusStyle } from './style';
 import { useRovingIndex } from './useRoving';
 
 
-export interface CenturyViewProps {
+export interface YearPickerProps {
   class?: string;
 
   currentYear: number;
@@ -53,7 +53,7 @@ type FocusToken = ['prev' | 'next', number];
 const GRID_SIZE = 5;
 
 
-export function CenturyView(props: CenturyViewProps) {
+export function YearPicker(props: YearPickerProps) {
 
   const { currentYear, years, onNext, onPrev, onSelect } = props;
 
@@ -140,7 +140,7 @@ export function CenturyView(props: CenturyViewProps) {
     });
 
   return (
-    <div class={cx('cla-century-view', props.class)}>
+    <div class={cx('cla-year-picker', props.class)}>
       <DatePickerHead label={label} navigation={true} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle} ref={setGridRef} onKeyDown={onGridKeyDown}>
         {yearsElms}

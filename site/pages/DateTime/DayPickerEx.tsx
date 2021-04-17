@@ -1,8 +1,8 @@
 import { css } from '@emotion/css';
 import { useMemo, useRef, useState } from 'preact/hooks';
 
-import { MonthView } from 'clarity-atoms/DateTime/MonthView';
-import { useMonth } from 'clarity-atoms/DateTime/useCalendar';
+import { DayPicker } from 'clarity-atoms/DateTime/DayPicker';
+import { useDays } from 'clarity-atoms/DateTime/useCalendar';
 
 
 const rootStyle = css`
@@ -18,7 +18,8 @@ const emptySet: Set<number> = new Set();
 const minDate = new Date(1980, 0);
 const maxDate = new Date(2040, 11);
 
-export default function MonthViewEx() {
+
+export default function DayPickerEx() {
 
   const current = useMemo(() => new Date(), []);
   const [date, setDate] = useState(() => current);
@@ -27,7 +28,7 @@ export default function MonthViewEx() {
 
   const x = useRef(null);
 
-  const { days, prev, next } = useMonth({
+  const { days, prev, next } = useDays({
     year, month,
     min: minDate,
     max: maxDate,
@@ -41,7 +42,7 @@ export default function MonthViewEx() {
 
   return (
     <div class={rootStyle}>
-      <MonthView class={style} ref={x}
+      <DayPicker class={style} ref={x}
         year={year} month={month} days={days}
         onYear={onYearMonthChange} onActivate={onActivate}
         onPrev={prev} onNext={next} />

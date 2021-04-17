@@ -11,7 +11,7 @@ import { DayInfo, months, YearMonth } from './useCalendar';
 import { useRovingIndex } from './useRoving';
 
 
-export interface MonthViewProps {
+export interface DayPickerProps {
   class?: string;
 
   days: DayInfo[];
@@ -25,7 +25,7 @@ export interface MonthViewProps {
   onActivate?: (date: Date) => void;
 }
 
-export interface MonthViewRef {
+export interface DayPickerRef {
   focus: (day?: number) => void;
 }
 
@@ -102,7 +102,7 @@ const dateStyle = css`
 type FocusToken = ['prev' | 'next', number];
 
 
-export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _ref: Ref<MonthViewRef>) {
+export const DayPicker = forwardRef(function DayPicker(props: DayPickerProps, _ref: Ref<DayPickerRef>) {
 
   const { days, year, month, range, onYear, onActivate, onPrev, onNext } = props;
 
@@ -172,7 +172,7 @@ export const MonthView = forwardRef(function MonthView(props: MonthViewProps, _r
   const label = months[month][1] + ' ' + year;
 
   return (
-    <div class={cx('cla-month-view', props.class)}>
+    <div class={cx('cla-day-picker', props.class)}>
       <DatePickerHead label={label} navigation={true}
         onAction={() => onYear?.([year, month])} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle} ref={setGridRef} onKeyDown={onGridKeyDown}>

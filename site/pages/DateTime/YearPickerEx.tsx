@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { useMemo, useState } from 'preact/hooks';
 
-import { CenturyView } from 'clarity-atoms/DateTime/CenturyView';
+import { YearPicker } from 'clarity-atoms/DateTime/YearPicker';
 
 
 const rootStyle = css`
@@ -19,7 +19,8 @@ const MAX_YEARS = 20;
 const FLOOR = 2008;
 const CEILING = 2053;
 
-export default function CenturyViewEx() {
+
+export default function YearPickerEx() {
 
   const current = useMemo(() => new Date(), []);
 
@@ -37,7 +38,7 @@ export default function CenturyViewEx() {
 
   return (
     <div class={rootStyle}>
-      <CenturyView class={style}
+      <YearPicker class={style}
         years={years} currentYear={year}
         onPrev={onPrev} onNext={onNext} />
     </div>

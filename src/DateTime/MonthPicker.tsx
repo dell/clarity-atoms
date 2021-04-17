@@ -11,11 +11,11 @@ import { MonthInfo, YearInfo, YearMonth } from './useCalendar';
 import { useRovingIndex } from './useRoving';
 
 
-export interface YearProps {
+export interface MonthPickerProps {
   class?: string;
 
   years: YearInfo[];
-  onCentury: (year: number) => void;
+  onYear: (year: number) => void;
   onSelect: (value: YearMonth) => void;
   onPrev?: () => void;
   onNext?: () => void;
@@ -59,9 +59,9 @@ const gapStyle = css`
 
 type FocusToken = ['prev' | 'next', number];
 
-export function YearView(props: YearProps) {
+export function MonthPicker(props: MonthPickerProps) {
 
-  const { years, onCentury, onSelect, onPrev, onNext  } = props;
+  const { years, onYear, onSelect, onPrev, onNext  } = props;
 
   const [gridRef, setGridRef] = useState<HTMLDivElement | null>(null);
   const focusRef = useRef<HTMLDivElement>(null);
@@ -128,10 +128,10 @@ export function YearView(props: YearProps) {
   });
 
   return (
-    <div class={cx('cla-year-view', props.class)} ref={setGridRef}>
+    <div class={cx('cla-month-picker', props.class)} ref={setGridRef}>
       {years.map((x, index) => {
         const onMonthChange = (month: number) => onSelect([x.year, month]);
-        const onAction = index === 0 ? (() => onCentury(x.year)) : undefined;
+        const onAction = index === 0 ? (() => onYear(x.year)) : undefined;
 
         return (
           <Fragment>
