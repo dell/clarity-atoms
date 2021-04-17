@@ -55,13 +55,13 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook<T>  {
     onSelect?.(selected);
   };
 
-  const list = useList(options || [], {
-    keydown: {
-      Tab: escape,
-      Escape: escape,
-    },
-    onSelect: select
-  });
+  // const list = useList(options || [], {
+  //   keydown: {
+  //     Tab: escape,
+  //     Escape: escape,
+  //   },
+  //   onSelect: select
+  // });
 
   const hasOptions = options.length > 0;
 
@@ -107,7 +107,7 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook<T>  {
 
   const surfaceProps = {
     ...dde.surfaceProps,
-    onKeydown: list.onKeydown
+    onKeydown: () => {}
   };
 
   return {
@@ -117,6 +117,6 @@ export function useSelect<T>(props: UseSelectProps<T>): UseSelectHook<T>  {
     select,
     surfaceProps,
     anchorProps,
-    highlighted: list.focusedIndex
+    highlighted: -1
   };
 }
