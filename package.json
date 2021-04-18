@@ -2,7 +2,6 @@
   "name": "clarity-atoms",
   "version": "0.0.1",
   "description": "Web Components based on Dell Clarity",
-  "type": "module",
   "module": "index.js",
   "types": "./index.d.ts",
   "repository": {
@@ -43,7 +42,9 @@
     "stylefire": "^7.0.3"
   },
   "scripts": {
+    "clean": "rm -rf dist",
     "build": "tsc -p ./src/tsconfig.json && cp package.json ./dist/lib",
+    "build:site": "webpack --mode=production",
     "dev": "webpack-dev-server"
   }
 }

@@ -14,6 +14,7 @@ const renderer = `
   };
 `;
 
+const SITE_DIST = path.join(__dirname, './dist/site');
 
 module.exports = {
 
@@ -27,7 +28,7 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, './dist'),
+    path: SITE_DIST,
     filename: '[name].[hash].bundle.js'
   },
 
@@ -84,7 +85,7 @@ module.exports = {
   },
 
   devServer: {
-    contentBase: './dist',
+    contentBase: SITE_DIST,
     port: 8080,
     historyApiFallback: true
   }
