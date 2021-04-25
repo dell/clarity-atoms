@@ -109,7 +109,7 @@ const outline = css`
   }
 
   &:disabled,
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     border-color: var(--ca-disabled-light);
     background-color: transparent;
   }
@@ -132,7 +132,7 @@ const solid = css`
   }
 
   &:disabled,
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     background-color: var(--ca-disabled-light);
   }
 `;
@@ -154,6 +154,11 @@ export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HT
 
   const classes =  cx('ptr-button', styles[variantDef], compact && compactStyle, props.class);
 
+  const propsCopy = { ...props };
+
+  delete propsCopy.ariaDisabled;
+  delete propsCopy.variant;
+
   const handler = (e: MouseEvent) => {
     if (ariaDisabled) {
       onClickDisabled?.(e);
@@ -163,7 +168,7 @@ export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HT
   };
 
   return (
-    <button {...props} type={typeDef} title={title} class={classes} ref={ref}
+    <button {...propsCopy} type={typeDef} title={title} class={classes} ref={ref}
       aria-disabled={ariaDisabled} disabled={disabled}
       onClick={handler}>
         {children}

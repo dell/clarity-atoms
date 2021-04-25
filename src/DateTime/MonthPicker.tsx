@@ -32,7 +32,7 @@ const gridStyle = css`
 
 const itemStyle = css`
   ${borderStyle};
-  height: 42px;
+  min-height: 2rem;
   padding: 0.5rem;
 
   &.current {
@@ -47,7 +47,7 @@ const itemStyle = css`
     ${focusStyle};
   }
 
-  &:disabled {
+  &[aria-disabled='true'] {
     ${disabledStyle};
   }
 `;
@@ -169,7 +169,7 @@ function MonthList(props: MonthListProps) {
           return (
             <Button {...rover.prop(`${year}-${x.abbr}`)}
               class={cx(itemStyle, x.isCurrent && 'current')}
-              variant='minimal' disabled={x.disabled}
+              variant='minimal' ariaDisabled={x.disabled}
               onClick={() => onMonth(index)}>
                 {x.abbr}
             </Button>

@@ -83,9 +83,13 @@ export function DatePickerHead(props: DatePickerHeadProps) {
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
 
-  const rover = useRovingIndex(
-    ['year', 'prev', 'next'],
-    { scope: rootRef!, wrapAround: true });
+  const rovingList = [];
+
+  onAction && rovingList.push('year');
+  onPrev && rovingList.push('prev');
+  onNext && rovingList.push('next');
+
+  const rover = useRovingIndex(rovingList, { scope: rootRef!, wrapAround: true });
 
   const onKeyDown = makeKeyboardHandler({
     ArrowLeft(e) {

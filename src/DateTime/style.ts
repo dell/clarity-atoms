@@ -1,18 +1,41 @@
 import { css } from '@emotion/css';
 
 
+export const focusStyle = css`
+  border-color: var(--ca-primary);
+`;
+
 export const borderStyle = css`
   border: 1px solid transparent;
-  transition: all 120ms ease-out;
+  transition: border-color 120ms ease-out;
 
-  &:not([disabled]):hover {
+  &:hover {
     border-color: var(--ca-border-hover);
   }
+
+  &:focus {
+    ${focusStyle};
+  }
+`;
+
+export const hoverStyle = css`
+  border-color: var(--ca-border-hover);
 `;
 
 export const disabledStyle = css`
   cursor: default;
+
   color: var(--ca-disabled);
+  border-color: transparent;
+
+  &:focus {
+    border-color: var(--ca-disabled);
+  }
+`;
+
+export const selectedStyle = css`
+  color: var(--ca-primary-comp);
+  background-color: var(--ca-primary);
 `;
 
 export const currentStyle = css`
@@ -33,8 +56,4 @@ export const currentStyle = css`
 
     background: currentColor;
   }
-`;
-
-export const focusStyle = css`
-  border-color: var(--ca-primary);
 `;

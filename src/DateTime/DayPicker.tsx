@@ -6,7 +6,7 @@ import { Button } from '../Button';
 import { makeKeyboardHandler, prevent } from '../util/keyboard';
 
 import { DatePickerHead } from './DatePickerHead';
-import { borderStyle, currentStyle, disabledStyle, focusStyle } from './style';
+import { borderStyle, currentStyle, disabledStyle, focusStyle, selectedStyle } from './style';
 import { DayInfo, months, YearMonth } from './useCalendar';
 import { useRovingIndex } from './useRoving';
 
@@ -37,32 +37,34 @@ const gridStyle = css`
   grid-template-columns: repeat(7, 1fr);
 `;
 
-const weekStyle = css`
+const baseButtonStyle = css`
   display: flex;
   min-width: 2.25rem;
   min-height: 1.75rem;
 
   justify-content: center;
   align-items: center;
+`;
 
+const weekStyle = css`
+  ${baseButtonStyle};
   ${borderStyle};
   font-size: 0.875rem;
 `;
 
 
-// There are following possibilities for day button styling
-// 1. standard              2. today              3. selected
-// 4. standard + disabled   5. today + disabled   6. selected + disabled
+// There are following possibilities for day button styling:
+// 1. standard (hover + focus)  2. today              3. selected
+// 4. standard + disabled       5. today + disabled   6. selected + disabled
 // 7. today + selected + disabled
-// 8. range                 9. range + disabled
+// 8. range                     9. range + disabled
 const dateStyle = css`
-  ${weekStyle};
+  ${baseButtonStyle};
+  ${borderStyle};
   min-height: 2rem;
 
   cursor: pointer;
-  font-size: inherit;
 
-  /* Case 2: today */
   &.today {
     ${currentStyle};
 
@@ -71,26 +73,17 @@ const dateStyle = css`
     }
   }
 
-  /* Case 3: selected */
   &.selected {
-    color: var(--ca-primary-comp);
-    background-color: var(--ca-primary);
-    border-color: var(--ca-primary);
+    ${selectedStyle};
   }
 
   &.range {
     ${focusStyle};
   }
 
-  &:focus {
-    ${focusStyle};
-  }
-
-  /* Case 4 & Case 5: standard/today + disabled */
-  &:disabled {
+  &[aria-disabled='true'] {
     ${disabledStyle};
 
-    /* Case 6: selected + disabled */
     &.selected {
       color: var(--ca-primary-comp);
       background-color: var(--ca-disabled);
@@ -188,7 +181,7 @@ export const DayPicker = forwardRef(function DayPicker(props: DayPickerProps, _r
 
           return (
             <Button {...rover.prop(x.dayOfMonth)} class={classes}
-              variant={'minimal'} disabled={x.disabled}
+              variant={'minimal'} ariaDisabled={x.disabled}
               style={{ gridColumn: (x.dayOfWeek + 1)}}
               onClick={() => onActivate?.(x.date)}>
                 {x.dayOfMonth}

@@ -14,7 +14,6 @@ const style = css`
   border: 1px solid #E0E0E0;
 `;
 
-const emptySet: Set<number> = new Set();
 const minDate = new Date(1980, 0);
 const maxDate = new Date(2040, 11);
 
@@ -24,6 +23,14 @@ export default function DayPickerEx() {
   const current = useMemo(() => new Date(), []);
   const [date, setDate] = useState(() => current);
 
+  // Previous day is selected
+  const selected = useMemo(
+    () => [new Date(current.getTime() - (24 * 60 * 60 * 1000))], [current]);
+
+  // Next day is disabled
+  const disabled = useMemo(
+    () => [new Date(current.getTime() + (24 * 60 * 60 * 1000))], [current]);
+
   const [[year, month], setView] = useState(() => [date.getFullYear(), date.getMonth()]);
 
   const x = useRef(null);
@@ -32,8 +39,8 @@ export default function DayPickerEx() {
     year, month,
     min: minDate,
     max: maxDate,
-    disabled: emptySet,
-    selected: emptySet,
+    disabled,
+    selected,
     onChange: setView as any
   });
 

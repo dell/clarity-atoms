@@ -73,8 +73,6 @@ export function useCalendar(props: UseCalendarProps): UseCalendarState {
   const [local, setLocal] = useState<YearMonth>([null, null]);
 
   const [current, min, max] = useExtrema(props.min, props.max);
-  const disabledSet = useDateSet(disabled);
-  const valueSet = useDateSet(value);
 
   const year = local[0] ?? current.getFullYear();
   const month = local[1] ?? current.getMonth();
@@ -86,8 +84,8 @@ export function useCalendar(props: UseCalendarProps): UseCalendarState {
   const mState = useDays({
     year, month, min, max,
     onChange: setLocal,
-    selected: valueSet,
-    disabled: disabledSet
+    selected: value,
+    disabled: disabled
   });
 
   return {
@@ -200,22 +198,23 @@ function buildMonths(year: number, current: Date, min: Date, max: Date, changeCb
 }
 
 
-export interface BuildMonthProp {
+export interface UseDaysProps {
   year: number;
   month: number;
 
   min: Date;
   max: Date;
 
-  selected: Set<number>;
-  disabled: Set<number>;
+  selected?: Date[];
+  disabled?: Date[];
 
   onChange: (yearMonth: YearMonth) => void;
 
   range?: [Date, Date];
 }
 
-export function useDays(props: BuildMonthProp) {
+
+export function useDays(props: UseDaysProps) {
 
   const { year, month, min, max, selected, disabled, range, onChange } = props;
 
@@ -224,9 +223,12 @@ export function useDays(props: BuildMonthProp) {
   const minYearMonth = min.getMonth();
   const maxYearMonth = max.getMonth();
 
+  const dSet = useDateSet(disabled);
+  const vSet = useDateSet(selected);
+
   const days = useMemo(() =>
-    buildDays(month, year, min, max, disabled || new Set(), selected || new Set(), new Date(), range),
-  [month, year, min, max, selected, disabled, range]);
+    buildDays(month, year, min, max, dSet || new Set(), vSet || new Set(), new Date(), range),
+  [month, year, min, max, vSet, dSet, range]);
 
   const prev = (year <= minYear && month <= minYearMonth)
     ? undefined
@@ -252,8 +254,7 @@ export function useDays(props: BuildMonthProp) {
 }
 
 
-
-export function buildDays(month: number, year: number, min: Date, max: Date,
+function buildDays(month: number, year: number, min: Date, max: Date,
   disabled: Set<number>, value: Set<number>, current: Date, range?: [Date, Date]): DayInfo[] {
     // Start of the Month
     const firstDay = new Date(year, month).getDay();
