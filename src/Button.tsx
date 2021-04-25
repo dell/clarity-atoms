@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
+import type { JSXInternal } from 'preact/src/jsx';
 
 export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';
 export type ButtonType = 'button' | 'submit' | 'reset';
@@ -13,6 +13,10 @@ export interface ButtonProps extends BaseButtonProps {
   type?: ButtonType;
   variant?: ButtonVariant;
   compact?: boolean;
+  ariaDisabled?: boolean;
+
+  onClick?: (e: MouseEvent) => void;
+  onClickDisabled?: (e: MouseEvent) => void;
 
   // Access native DOM Button element
   ref?: Ref<any>;
@@ -104,7 +108,8 @@ const outline = css`
     border-color: var(--ca-primary);
   }
 
-  &[disabled] {
+  &:disabled,
+  &[aria-disabled="true"] {
     border-color: var(--ca-disabled-light);
     background-color: transparent;
   }
@@ -126,7 +131,8 @@ const solid = css`
     background-color: var(--ca-primary-light);
   }
 
-  &[disabled] {
+  &:disabled,
+  &[aria-disabled="true"] {
     background-color: var(--ca-disabled-light);
   }
 `;
@@ -141,16 +147,25 @@ const compactStyle = css`
 
 export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HTMLButtonElement>) {
 
-  const { compact, title, onClick, children, disabled, type, variant } = props;
+  const { compact, title, children, onClick, onClickDisabled, ariaDisabled, disabled, type, variant } = props;
 
   const typeDef = type || 'button';
   const variantDef = variant || 'outline';
 
-  const classes =  cx('catm-button', styles[variantDef], compact && compactStyle, props.class);
+  const classes =  cx('ptr-button', styles[variantDef], compact && compactStyle, props.class);
+
+  const handler = (e: MouseEvent) => {
+    if (ariaDisabled) {
+      onClickDisabled?.(e);
+    } else {
+      onClick?.(e);
+    }
+  };
 
   return (
     <button {...props} type={typeDef} title={title} class={classes} ref={ref}
-      onClick={onClick} disabled={disabled}>
+      aria-disabled={ariaDisabled} disabled={disabled}
+      onClick={handler}>
         {children}
     </button>
   );
