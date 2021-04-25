@@ -7,7 +7,7 @@ export const focusStyle = css`
 
 export const borderStyle = css`
   border: 1px solid transparent;
-  transition: border-color 120ms ease-out;
+  transition: border-color 150ms ease-out;
 
   &:hover {
     border-color: var(--ca-border-hover);

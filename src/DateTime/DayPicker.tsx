@@ -180,7 +180,7 @@ export const DayPicker = forwardRef(function DayPicker(props: DayPickerProps, _r
           const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected', x.inRange && 'range');
 
           return (
-            <Button {...rover.prop(x.dayOfMonth)} class={classes}
+            <Button {...rover.prop(x.dayOfMonth)} key={`${month}${x.dayOfMonth}`} class={classes}
               variant={'minimal'} ariaDisabled={x.disabled}
               style={{ gridColumn: (x.dayOfWeek + 1)}}
               onClick={() => onActivate?.(x.date)}>
