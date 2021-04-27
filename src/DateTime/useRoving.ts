@@ -8,9 +8,25 @@ export interface RovingIndexOptions {
   gridSize?: number;
 }
 
+export interface RovingIndex<T> {
+  active: T;
+  sequence: T[];
+  index: number;
+
+  next(): boolean;
+  nextRow(): boolean;
+
+  prev(): boolean;
+  prevRow(): boolean;
+
+  set(index: number, focus?: boolean): boolean;
+  setValue(value: T): boolean;
+  prop(x: T): object;
+}
+
 // TODO: Can this be generalized?
 // Also, find out if you can trust the DOM.
-export function useRovingIndex<T extends (string | number)>(sequence: T[], options: RovingIndexOptions) {
+export function useRovingIndex<T extends (string | number)>(sequence: T[], options: RovingIndexOptions): RovingIndex<T> {
 
   const { scope, wrapAround, gridSize } = options;
 
@@ -19,13 +35,16 @@ export function useRovingIndex<T extends (string | number)>(sequence: T[], optio
 
   const findElm = (index: number) => qs(scope, `[data-roving='${sequence[index]}']`);
 
-  const commit = (nextCurrent: number) => {
+  const commit = (nextCurrent: number, focus: boolean = true) => {
     const elm = findElm(nextCurrent);
     const isOkay = nextCurrent !== -1 && !!elm;
 
     if (isOkay) {
       setCurrent(nextCurrent);
-      elm!.focus();
+
+      if (focus) {
+        elm!.focus();
+      }
     }
 
     return isOkay;
@@ -61,10 +80,10 @@ export function useRovingIndex<T extends (string | number)>(sequence: T[], optio
       return commit(newVal);
     },
 
-    set(index: number) {
+    set(index: number, focus?: boolean) {
       const newVal = sequence[index] !== undefined ? index : -1;
 
-      return commit(newVal);
+      return commit(newVal, focus);
     },
 
     setValue(value: T) {

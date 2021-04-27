@@ -128,7 +128,7 @@ export function MonthPicker(props: MonthPickerProps) {
   });
 
   return (
-    <div class={cx('cla-month-picker', props.class)} ref={setGridRef}>
+    <div class={cx('ptr-month-picker', props.class)} ref={setGridRef}>
       {years.map((x, index) => {
         const onMonthChange = (month: number) => onSelect([x.year, month]);
         const onAction = index === 0 ? (() => onYear(x.year)) : undefined;

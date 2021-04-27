@@ -43,10 +43,6 @@ const monthStyle = css`
     transform: rotateX(180deg);
   }
 
-  &:focus {
-    background: var(--ca-button-focus);
-  }
-
   &[disabled] {
     cursor: default;
   }
@@ -57,10 +53,6 @@ const arrowStyle = css`
   height: 2.25rem;
 
   ${borderStyle};
-
-  &:focus {
-    background: var(--ca-button-focus);
-  }
 
   &:disabled {
     ${disabledStyle};
@@ -76,6 +68,7 @@ const arrowStyle = css`
     height: 0.875rem;
   }
 `;
+
 
 export function DatePickerHead(props: DatePickerHeadProps) {
 

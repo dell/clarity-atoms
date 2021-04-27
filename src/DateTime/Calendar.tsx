@@ -52,9 +52,9 @@ enum Motion {
   MonthToDay
 }
 
-const dayPicker = '.cla-day-picker';
-const monthPicker = '.cla-month-picker';
-const yearPicker = '.cla-year-picker';
+const dayPicker = '.ptr-day-picker';
+const monthPicker = '.ptr-month-picker';
+const yearPicker = '.ptr-year-picker';
 
 
 export function Calendar(props: CalendarProps) {

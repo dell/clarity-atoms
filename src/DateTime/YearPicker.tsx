@@ -140,7 +140,7 @@ export function YearPicker(props: YearPickerProps) {
     });
 
   return (
-    <div class={cx('cla-year-picker', props.class)}>
+    <div class={cx('ptr-year-picker', props.class)}>
       <DatePickerHead label={label} navigation={true} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle} ref={setGridRef} onKeyDown={onGridKeyDown}>
         {yearsElms}

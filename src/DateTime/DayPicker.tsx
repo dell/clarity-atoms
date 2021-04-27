@@ -165,7 +165,7 @@ export const DayPicker = forwardRef(function DayPicker(props: DayPickerProps, _r
   const label = months[month][1] + ' ' + year;
 
   return (
-    <div class={cx('cla-day-picker', props.class)}>
+    <div class={cx('ptr-day-picker', props.class)}>
       <DatePickerHead label={label} navigation={true}
         onAction={() => onYear?.([year, month])} onPrev={onPrev} onNext={onNext} />
       <div class={gridStyle} ref={setGridRef} onKeyDown={onGridKeyDown}>
@@ -176,14 +176,21 @@ export const DayPicker = forwardRef(function DayPicker(props: DayPickerProps, _r
         <div class={weekStyle}>Th</div>
         <div class={weekStyle}>Fr</div>
         <div class={weekStyle}>Sa</div>
-        {days.map((x) => {
+        {days.map((x, index) => {
           const classes = cx(dateStyle, x.isToday && 'today', x.selected && 'selected', x.inRange && 'range');
+
+          const onClick = () => {
+            onActivate?.(x.date);
+            rover.set(index, false);
+          };
+
+          const onDisabled = () => void rover.set(index, false);
 
           return (
             <Button {...rover.prop(x.dayOfMonth)} key={`${month}${x.dayOfMonth}`} class={classes}
               variant={'minimal'} ariaDisabled={x.disabled}
               style={{ gridColumn: (x.dayOfWeek + 1)}}
-              onClick={() => onActivate?.(x.date)}>
+              onClick={onClick} onClickDisabled={onDisabled}>
                 {x.dayOfMonth}
             </Button>
           );
