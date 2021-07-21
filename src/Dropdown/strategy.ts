@@ -14,7 +14,7 @@ export function makePlacement(anchor: Element, popper: Element) {
     const strategy = getStrategy(anchor, popper);
     const dims = calculateDimensions(strategy, anchor, popper);
 
-    return { ...dims, strategy };
+    return { ...dims, strategy, opacity: 0 };
 }
 
 export function makeAnimation$(followWidth: boolean): Observable<any> {

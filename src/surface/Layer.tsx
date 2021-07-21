@@ -20,9 +20,9 @@ export interface LayerProps {
 
 export function Layer(props: LayerProps) {
 
-  const { children, attached, backdrop: overlay, blocking, backdropClass, onBackdropClick } = props;
+  const { children, attached, backdrop, blocking, backdropClass, onBackdropClick } = props;
 
-  const overlayStyle = overlay === 'dark' ? darkOverlay : transparentOverlay;
+  const overlayStyle = backdrop === 'dark' ? darkOverlay : transparentOverlay;
 
   const surface = () => (
     <PortalIntoBody class={cx('layer', props.class)}>
