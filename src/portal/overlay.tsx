@@ -7,6 +7,8 @@ export const overlayBase = css`
   top: 0;
   left: 0;
   width: 100vw;
+
+  /* TODO: 100vh doesn't work well for mobile browsers */
   height: 100vh;
 `;
 
