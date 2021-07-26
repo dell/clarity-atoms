@@ -14,3 +14,13 @@ export function addEvent<K extends keyof HTMLElementEventMap>(
 
   return () => target.removeEventListener(eventName, listener as any);
 }
+
+
+export function addClass(element: Element, ...classNames: string[]) {
+  console.log(element.classList, classNames);
+  element.classList.add(...classNames);
+}
+
+export function removeClass(element: Element, ...classNames: string[]) {
+  element.classList.remove(...classNames);
+}
