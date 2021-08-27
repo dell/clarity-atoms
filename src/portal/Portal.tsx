@@ -16,7 +16,6 @@ export function Portal(props: PortalProps) {
 
   const { children, mountElm } = props;
 
-
   // Portal element renders nothing
   return createPortal(children as any, mountElm);
 }

@@ -1,10 +1,10 @@
 import { css, cx } from '@emotion/css';
 import { ComponentChildren } from 'preact';
-import { useEffect } from 'preact/hooks';
+import { useLayoutEffect } from 'preact/hooks';
 
 import { transparentOverlay, darkOverlay } from '../portal/overlay';
 import { PortalIntoBody } from '../portal/PortalIntoBody';
-import { addClass, removeClass } from '../util/dom';
+import { addClass } from '../util/dom';
 
 
 export interface LayerProps {
@@ -13,9 +13,9 @@ export interface LayerProps {
 
   attached: boolean;
 
+  blocking?: boolean;
   backdrop?: 'transparent' | 'dark';
   backdropClass?: string;
-  blocking?: boolean;
   onBackdropClick?: () => void;
 }
 
@@ -25,21 +25,14 @@ const hideScrollStyle = css`
 `;
 
 
-const hideScroll = () => addClass(document.body, hideScrollStyle);
-const resumeScroll = () => removeClass(document.body, hideScrollStyle);
-
-
 function useBodyHideScroll(enabled: boolean) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (enabled) {
-      hideScroll();
-
-      return resumeScroll;
+      return addClass(document.body, hideScrollStyle);
     }
-
-
   }, [enabled]);
 }
+
 
 /**
  * Create a layer that directly appends to the body. The scrollbacr
@@ -53,11 +46,12 @@ export function Layer(props: LayerProps) {
   const overlayStyle = backdrop === 'dark' ? darkOverlay : transparentOverlay;
 
   // When Layer is being added, the body's scroll must be deactivated temporarily.
-  useBodyHideScroll(attached);
+  useBodyHideScroll(attached && !!blocking);
 
   const surface = () => (
     <PortalIntoBody class={cx('layer', props.class)}>
-      {blocking && <div class={cx('backdrop', overlayStyle, backdropClass)} onClick={onBackdropClick}></div>}
+      {blocking &&
+        <div class={cx('backdrop', overlayStyle, backdropClass)} onClick={onBackdropClick} />}
       {children}
     </PortalIntoBody>
   );

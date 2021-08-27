@@ -17,8 +17,10 @@ export function addEvent<K extends keyof HTMLElementEventMap>(
 
 
 export function addClass(element: Element, ...classNames: string[]) {
-  console.log(element.classList, classNames);
   element.classList.add(...classNames);
+
+  // Return a function that can be used to remove the added classes.
+  return () => removeClass(element, ...classNames);
 }
 
 export function removeClass(element: Element, ...classNames: string[]) {
