@@ -1,19 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const renderer = `
-  import { mdx as h } from '@mdx-js/preact';
-
-  const mdx = function (name, props, ...children) {
-
-    if (name === 'inlineCode') {
-      return h('inline-code', props, ...children);
-    }
-
-    return h(name, props, ...children);
-  };
-`;
-
 const SITE_DIST = path.join(__dirname, './dist/site');
 
 module.exports = {
@@ -57,7 +44,9 @@ module.exports = {
           {
             loader: '@mdx-js/loader',
             options: {
-              renderer
+              jsxImportSource: 'preact',
+              // Optional: either remove the following line or install `@mdx-js/preact`.
+              providerImportSource: '@mdx-js/preact'
             }
           },
           {
