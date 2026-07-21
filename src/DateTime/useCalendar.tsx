@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 
 
 export type YearMonth = [number | null, number | null];
@@ -65,12 +65,22 @@ export function useCalendar(props: UseCalendarProps): UseCalendarState {
 
   const { value, disabled } = props;
 
+  const selected = value?.[0];
+
   // Temporary transient state for internal selection
   // Why is it required?
   // Date selection is a three step process - year, month and then finally day.
   // Before user selects a `day`, it can remain in a transient state by choosing only year
   // or by choosing only till month and waiting for user to select final day.
-  const [local, setLocal] = useState<YearMonth>([null, null]);
+  const [local, setLocal] = useState<YearMonth>(
+    selected ? [selected.getFullYear(), selected.getMonth()] : [null, null]
+  );
+
+  useEffect(() => {
+    if (selected) {
+      setLocal([selected.getFullYear(), selected.getMonth()]);
+    }
+  }, [selected]);
 
   const [current, min, max] = useExtrema(props.min, props.max);
 

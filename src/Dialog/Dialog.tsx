@@ -1,6 +1,6 @@
 import { cx, css } from '@emotion/css';
 import { ComponentChildren } from 'preact';
-import { useContext } from 'preact/hooks';
+import { useContext, useEffect } from 'preact/hooks';
 import { noop } from 'rxjs';
 
 import { Button } from '../Button';
@@ -63,9 +63,25 @@ export function Dialog(props: DialogProps) {
     props.class
   );
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onEscape?.();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open, onEscape]);
+
   return (
     <DialogContext.Provider value={{ onClose: onEscape || noop}}>
-      <Layer attached={open} class={'dialog-surface'} backdrop='dark' onBackdropClick={onEscape}>
+      <Layer attached={open} blocking={true} class={'dialog-surface'} backdrop='dark' onBackdropClick={onEscape}>
         <div ref={ref} class={cx('dialog', classes)} tabIndex={-1}>
           {children}
         </div>
