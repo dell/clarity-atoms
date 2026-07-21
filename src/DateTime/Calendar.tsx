@@ -153,30 +153,6 @@ export function Calendar(props: CalendarProps) {
   );
 }
 
-
-/* function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void) {
-
-  const scaleInElm = styler(scaleIn);
-  const scaleOutElm = styler(scaleOut);
-
-  const enter = animate({ opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1 }, {
-    duration: 0.24,
-    onUpdate: (x: string) => scaleInElm.set(x),
-    onComplete: onDone
-  });
-
-  const exit = animate({ opacity: 1, scale: 1 }, { opacity: 0, scale: 0.8 }, {
-    duration: 0.18,
-    ease: easeOut,
-    onUpdate: (x: string) => scaleOutElm.set(x)
-  });
-
-  return () => {
-    enter.cancel();
-    exit.cancel();
-  };
-} */
-
 function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void) {
   const enter = animate(
     scaleIn as HTMLElement,
@@ -207,29 +183,6 @@ function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void
     exit.cancel();
   };
 }
-
-
-/* function scaleOutScaleIn(scaleIn: Element, scaleOut: Element, onDone: () => void) {
-  const scaleInElm = styler(scaleIn);
-  const scaleOutElm = styler(scaleOut);
-
-  const enter = animate({ opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1 }, {
-    duration: 0.24,
-    onUpdate: (x: string) => scaleInElm.set(x),
-    onComplete: onDone
-  });
-
-  const exit = animate({ opacity: 1, scale: 1 }, { opacity: 0, scale: 1.3 }, {
-    duration: 0.18,
-    ease: easeOut,
-    onUpdate: (x: string) => scaleOutElm.set(x)
-  });
-
-  return () => {
-    enter.stop();
-    exit.stop();
-  };
-} */
 
 function scaleOutScaleIn(scaleIn: Element, scaleOut: Element, onDone: () => void) {
   const enter = animate(
