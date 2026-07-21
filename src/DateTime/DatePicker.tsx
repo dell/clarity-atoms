@@ -1,5 +1,4 @@
 import { Fragment } from 'preact';
-import { useEffect } from 'preact/hooks';
 
 import { Button } from '../Button';
 import { useDropdownSurface } from '../Dropdown/useDropdownSurface';
@@ -20,15 +19,13 @@ export function DatePicker(props: DatePickerProps) {
 
   const dds = useDropdownSurface();
 
-  useEffect(() => dds.open(), []);
-
   return (
     <Fragment>
       <div>
         <span>Date: </span>
         <span>{value?.toDateString() || 'No date selected'}</span>
       </div>
-      <Button {...dds.anchorProps} variant='solid' onClick={dds.open}>
+      <Button {...dds.anchorProps} ref={dds.anchorProps.ref} variant='solid' onClick={dds.open}>
         Select Date
       </Button>
       

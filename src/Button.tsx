@@ -1,15 +1,16 @@
 import { css, cx } from '@emotion/css';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
-import type { JSXInternal } from 'preact/src/jsx';
+import type { ButtonHTMLAttributes, Signalish } from 'preact';
 
 export type ButtonVariant = 'solid' | 'outline' | 'flat' | 'minimal';
 export type ButtonType = 'button' | 'submit' | 'reset';
 
 
-type BaseButtonProps = JSXInternal.HTMLAttributes<HTMLButtonElement>;
+type BaseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export interface ButtonProps extends BaseButtonProps {
+  class?: Signalish<string | undefined>;
   type?: ButtonType;
   variant?: ButtonVariant;
   compact?: boolean;
@@ -152,12 +153,14 @@ export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HT
   const typeDef = type || 'button';
   const variantDef = variant || 'outline';
 
-  const classes =  cx('ptr-button', styles[variantDef], compact && compactStyle, props.class);
+  const classes =  cx('ptr-button', styles[variantDef], compact && compactStyle, props.class as string | undefined);
 
   const propsCopy = { ...props };
+  const legacyRef = propsCopy.ref;
 
   delete propsCopy.ariaDisabled;
   delete propsCopy.variant;
+  delete propsCopy.ref;
 
   const handler = (e: MouseEvent) => {
     if (ariaDisabled) {
@@ -168,7 +171,7 @@ export const Button = forwardRef(function Button(props: ButtonProps, ref: Ref<HT
   };
 
   return (
-    <button {...propsCopy} type={typeDef} title={title} class={classes} ref={ref}
+    <button {...propsCopy} type={typeDef} title={title} class={classes} ref={ref || legacyRef}
       aria-disabled={ariaDisabled} disabled={disabled}
       onClick={handler}>
         {children}

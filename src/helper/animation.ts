@@ -1,4 +1,5 @@
-import { animate } from 'popmotion';
+
+import { animate } from 'motion';
 import { Observable, Observer } from 'rxjs';
 
 
@@ -15,13 +16,35 @@ export const scaleXY = () => animate$(scaleXYStart, scaleXYEnd);
 function animate$(from: any, to: any) {
   return new Observable((obs: Observer<any>) => {
 
-    const mainAction = animate({
-      from, to,
-      duration: 120,
-      onUpdate: (v) => obs.next(v),
-      onComplete: () => obs.complete()
+    const keys = Object.keys(to || {});
+
+    const mainAction = animate(0, 1, {
+      duration: 0.12, // seconds
+      onUpdate: (progress) => {
+        const frame = keys.reduce((acc, key) => {
+          const fromValue = from?.[key];
+          const toValue = to?.[key];
+
+          if (typeof fromValue === 'number' && typeof toValue === 'number') {
+            acc[key] = fromValue + (toValue - fromValue) * progress;
+          } else {
+            acc[key] = progress < 1 ? fromValue : toValue;
+          }
+
+          return acc;
+        }, {} as Record<string, any>);
+
+        obs.next(frame);
+      },
+      onComplete: () => obs.complete(),
     });
 
-    return () => mainAction.stop();
+    return () => {
+      if (typeof (mainAction as any).cancel === 'function') {
+        (mainAction as any).cancel();
+      } else if (typeof (mainAction as any).stop === 'function') {
+        (mainAction as any).stop();
+      }
+    };
   });
 }
