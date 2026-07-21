@@ -1,7 +1,6 @@
 import { css, cx } from '@emotion/css';
-import { animate, easeOut } from 'popmotion';
+import { animate, easeOut } from 'motion';
 import { useLayoutEffect, useState } from 'preact/hooks';
-import styler from 'stylefire';
 
 import { YearPicker } from './YearPicker';
 import { DayPicker } from './DayPicker';
@@ -155,56 +154,110 @@ export function Calendar(props: CalendarProps) {
 }
 
 
-function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void) {
+/* function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void) {
 
   const scaleInElm = styler(scaleIn);
   const scaleOutElm = styler(scaleOut);
 
-  const enter = animate({
-    from: { opacity: 0, scale: 1.3 },
-    to: { opacity: 1, scale: 1 },
-    duration: 240,
-    onUpdate: (x) => scaleInElm.set(x),
+  const enter = animate({ opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1 }, {
+    duration: 0.24,
+    onUpdate: (x: string) => scaleInElm.set(x),
     onComplete: onDone
   });
 
-  const exit = animate({
-    from: { opacity: 1, scale: 1 },
-    to: { opacity: 0, scale: 0.8 },
-    duration: 180,
+  const exit = animate({ opacity: 1, scale: 1 }, { opacity: 0, scale: 0.8 }, {
+    duration: 0.18,
     ease: easeOut,
-    onUpdate: (x) => scaleOutElm.set(x)
+    onUpdate: (x: string) => scaleOutElm.set(x)
+  });
+
+  return () => {
+    enter.cancel();
+    exit.cancel();
+  };
+} */
+
+function scaleInScaleOut(scaleIn: Element, scaleOut: Element, onDone: () => void) {
+  const enter = animate(
+    scaleIn as HTMLElement,
+    {
+      opacity: [0, 1],
+      scale: [1.3, 1]
+    },
+    {
+      duration: 0.24,
+      onComplete: onDone
+    }
+  );
+
+  const exit = animate(
+    scaleOut as HTMLElement,
+    {
+      opacity: [1, 0],
+      scale: [1, 0.8]
+    },
+    {
+      duration: 0.18,
+      ease: easeOut
+    }
+  );
+
+  return () => {
+    enter.cancel();
+    exit.cancel();
+  };
+}
+
+
+/* function scaleOutScaleIn(scaleIn: Element, scaleOut: Element, onDone: () => void) {
+  const scaleInElm = styler(scaleIn);
+  const scaleOutElm = styler(scaleOut);
+
+  const enter = animate({ opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1 }, {
+    duration: 0.24,
+    onUpdate: (x: string) => scaleInElm.set(x),
+    onComplete: onDone
+  });
+
+  const exit = animate({ opacity: 1, scale: 1 }, { opacity: 0, scale: 1.3 }, {
+    duration: 0.18,
+    ease: easeOut,
+    onUpdate: (x: string) => scaleOutElm.set(x)
   });
 
   return () => {
     enter.stop();
     exit.stop();
   };
-}
-
+} */
 
 function scaleOutScaleIn(scaleIn: Element, scaleOut: Element, onDone: () => void) {
-  const scaleInElm = styler(scaleIn);
-  const scaleOutElm = styler(scaleOut);
+  const enter = animate(
+    scaleIn as HTMLElement,
+    {
+      opacity: [0, 1],
+      scale: [0.8, 1]
+    },
+    {
+      duration: 0.24,
+      onComplete: onDone
+    }
+  );
 
-  const enter = animate({
-    from: { opacity: 0, scale: 0.8 },
-    to: { opacity: 1, scale: 1 },
-    duration: 240,
-    onUpdate: (x) => scaleInElm.set(x),
-    onComplete: onDone
-  });
-
-  const exit = animate({
-    from: { opacity: 1, scale: 1 },
-    to: { opacity: 0, scale: 1.3 },
-    duration: 180,
-    ease: easeOut,
-    onUpdate: (x) => scaleOutElm.set(x)
-  });
+  const exit = animate(
+    scaleOut as HTMLElement,
+    {
+      opacity: [1, 0],
+      scale: [1, 1.3]
+    },
+    {
+      duration: 0.18,
+      ease: easeOut
+    }
+  );
 
   return () => {
-    enter.stop();
-    exit.stop();
+    enter.cancel();
+    exit.cancel();
   };
 }

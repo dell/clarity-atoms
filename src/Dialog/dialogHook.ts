@@ -1,6 +1,6 @@
-import { useRef, useLayoutEffect, Ref } from 'preact/hooks';
-import { animate } from 'popmotion';
-import styler from 'stylefire';
+import { animate } from 'motion';
+import { Ref } from 'preact';
+import { useRef, useLayoutEffect } from 'preact/hooks';
 
 
 export type DialogStrategy = 'modal' | 'sidebar-right';
@@ -14,32 +14,32 @@ export function useDialog(isOpen: boolean, strategy: DialogStrategy) {
   useLayoutEffect(() => {
 
     if (isOpen && ref.current) {
-
-      const elmStyler = styler(ref.current);
-
-      const updater = (v: any) => elmStyler.set(v);
-
       const subscription = strategy === 'modal'
-        ? modalAnimation(updater)
-        : rightSidebarAnimation(updater);
+        ? modalAnimation(ref.current)
+        : rightSidebarAnimation(ref.current);
 
       // Animation cleanup
-      return () => subscription.stop();
+      return () => cancelAnimation(subscription);
 
     } else if (!isOpen && ref.current) {
-
-      const elmStyler = styler(ref.current);
-
-      const subscription = animate({
-        to: {
-          scale: 0.7,
-          opacity: 0
-        },
-        onUpdate: (v: any) => elmStyler.set(v)
-      });
+      const subscription = strategy === 'modal'
+        ? animate(ref.current, {
+          scale: [1, 0.7],
+          opacity: [1, 0],
+          x: ['-50%', '-50%'],
+          y: ['-50%', '-50%']
+        }, {
+          duration: 0.12,
+        })
+        : animate(ref.current, {
+          scale: [1, 0.7],
+          opacity: [1, 0]
+        }, {
+          duration: 0.12,
+        });
 
       // Animation cleanup
-      return () => subscription.stop();
+      return () => cancelAnimation(subscription);
     }
 
   }, [isOpen, strategy]);
@@ -48,36 +48,30 @@ export function useDialog(isOpen: boolean, strategy: DialogStrategy) {
 }
 
 
-function modalAnimation(updater: (v: any) => void) {
-  return animate({
-    duration: 240,
-    from: {
-      scale: 0.7,
-      opacity: 0,
-      x: '-50%',
-      y: '-50%'
-    },
-    to: {
-      scale: 1,
-      opacity: 1,
-      x: '-50%',
-      y: '-50%'
-    },
-    onUpdate: updater
+function modalAnimation(elm: HTMLElement) {
+  return animate(elm, {
+    scale: [0.7, 1],
+    opacity: [0, 1],
+    x: ['-50%', '-50%'],
+    y: ['-50%', '-50%']
+  }, {
+    duration: 0.24, // seconds
   });
 }
 
-function rightSidebarAnimation(updater: (v: any) => void) {
-  return animate({
-    duration: 240,
-    from: {
-      opacity: 0,
-      x: '0%'
-    },
-    to: {
-      opacity: 1,
-      x: '-100%'
-    },
-    onUpdate: updater
+function rightSidebarAnimation(elm: HTMLElement) {
+  return animate(elm, {
+    opacity: [0, 1],
+    x: ['0%', '-100%']
+  }, {
+    duration: 0.24, // seconds
   });
+}
+
+function cancelAnimation(animation: any) {
+  if (typeof animation?.cancel === 'function') {
+    animation.cancel();
+  } else if (typeof animation?.stop === 'function') {
+    animation.stop();
+  }
 }
